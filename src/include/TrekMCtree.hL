@@ -1,0 +1,194 @@
+#ifndef TrekMCtree_HH
+#define TrekMCtree_HH 1
+
+#include "TObject.h"
+#include "TArray.h"
+//#include "G4String.hh"
+
+static const int NMAX=256;
+class TrekMCtree : public TObject {
+public:
+  TrekMCtree();
+  ~TrekMCtree();
+  ClassDef(TrekMCtree,1);
+};
+
+class TrekEventInfo: public TrekMCtree{
+public:
+  Int_t run;
+  Int_t event;
+  Int_t n, lable, lablePi01, lablePi02;
+
+  // state vector variables before the B-field:
+  //  Needed for msc study --> G4 & Ext. Kalman Filter
+  Double_t svx, svy, svz, svL;
+  Double_t svnx, svny, svnz;
+  Double_t psv; //momentum of state vector before B-field
+  TrekEventInfo();
+  ~TrekEventInfo();
+  ClassDef(TrekEventInfo,2);
+};
+
+class TrekTargetInfo: public TrekMCtree{
+public:
+  Double_t trid[7];
+  Double_t tg_x[7], tg_y[7], tg_z[7];
+  Double_t tp_x[7], tp_y[7], tp_z[7], t_p[7];
+  Double_t tgt_x[7], tgt_y[7], tgt_z[7];
+  Double_t targetE[7];
+  Double_t tgtE[7];
+  Double_t tgtP[7];
+  Double_t tgtPx[7], tgtPy[7], tgtPz[7];
+  Double_t targetdE[7];
+  Double_t targetdt[7], tgtDE, tgtE_loss;
+  Double_t targL;
+  // target surface variables
+  Double_t sx, sy, sz, sE;
+  Double_t snx, sny, snz, totP;
+  
+  TrekTargetInfo();
+  ~TrekTargetInfo();
+  ClassDef(TrekTargetInfo,2);
+};
+
+class TrekSftInfo: public TrekMCtree{
+public:
+  Int_t pid[NMAX], trid[NMAX];
+  Double_t SFTwposx[NMAX];
+  Double_t SFTwposy[NMAX];
+  Double_t SFTwposz[NMAX];
+  Double_t SFTpx[NMAX];
+  Double_t SFTpy[NMAX];
+  Double_t SFTpz[NMAX];
+
+  TrekSftInfo();
+  ~TrekSftInfo();
+  ClassDef(TrekSftInfo,2);
+};
+
+class TrekTof1Info: public TrekMCtree{
+public:  // difficult to determine the gap nos from assembyV. set variables as vectors instead
+  Int_t pid[NMAX], trid[NMAX]; // store user-define PID as well as the corresponding G4 trackID
+  Double_t tof1_E[NMAX], tof1_pL[NMAX];
+  Double_t tof1_x[NMAX], tof1_y[NMAX], tof1_z[NMAX];
+  Double_t tof1_px[NMAX], tof1_py[NMAX], tof1_pz[NMAX];
+  Double_t tof1wpos[NMAX]; //[3];
+  Double_t t1[NMAX];
+
+  TrekTof1Info();
+  ~TrekTof1Info();
+  ClassDef(TrekTof1Info,2);
+};
+
+class TrekAcInfo: public TrekMCtree{
+public:
+  Int_t dRays[NMAX], photoEl[NMAX];
+  Int_t pid[NMAX], trid[NMAX]; // store user-define PID as well as the corresponding G4 trackID
+  Double_t ac_E[NMAX], acEkin[NMAX], acMom[NMAX], ac_pathL[NMAX];
+  Double_t ac_x[NMAX], ac_y[NMAX], ac_z[NMAX];
+  Double_t acp_x[NMAX], acp_y[NMAX], acp_z[NMAX];
+  Double_t acn_x[NMAX], acn_y[NMAX], acn_z[NMAX];
+  TrekAcInfo();
+  ~TrekAcInfo();
+  ClassDef(TrekAcInfo,2);
+};
+
+class TrekMwpcInfo: public TrekMCtree{
+public:
+  Int_t pid1[NMAX], trid1[NMAX], pid2[NMAX], trid2[NMAX], pid3[NMAX], trid3[NMAX]; // store user-define PID as well as the corresponding G4 trackID
+  Int_t gapNo[NMAX];
+  Double_t c2_x[NMAX], c2_y[NMAX], c2_z[NMAX];
+  Double_t c3_x[NMAX], c3_y[NMAX], c3_z[NMAX];
+  Double_t c4_x[NMAX], c4_y[NMAX], c4_z[NMAX];
+
+  Double_t c2p_x[NMAX], c2p_y[NMAX], c2p_z[NMAX];
+  Double_t c3p_x[NMAX], c3p_y[NMAX], c3p_z[NMAX];
+  Double_t c4p_x[NMAX], c4p_y[NMAX], c4p_z[NMAX];
+
+  Double_t c2wpos_x[NMAX];
+  Double_t c2wpos_y[NMAX];
+  Double_t c2wpos_z[NMAX];
+
+  Double_t c3wpos_x[NMAX]; 
+  Double_t c3wpos_y[NMAX]; 
+  Double_t c3wpos_z[NMAX]; 
+
+  Double_t c4wpos_x[NMAX];
+  Double_t c4wpos_y[NMAX];
+  Double_t c4wpos_z[NMAX];
+  Double_t plen[NMAX];
+  TrekMwpcInfo();
+  ~TrekMwpcInfo();
+  ClassDef(TrekMwpcInfo,2);
+};
+
+class TrekGvInfo: public TrekMCtree{
+public:
+  std::vector<double> eneGapVeto;
+
+  TrekGvInfo();
+  ~TrekGvInfo();
+  ClassDef(TrekGvInfo,2);
+};
+
+class TrekTof2Info: public TrekMCtree{
+public:
+  Int_t pid[NMAX], trid[NMAX]; // store user-define PID as well as the corresponding G4 trackID
+  Double_t gapNo[NMAX];
+  Double_t tof2_E[NMAX], tof2_P[NMAX], tof2_pL[NMAX];
+  Double_t tof2_x[NMAX], tof2_y[NMAX], tof2_z[NMAX];
+  Double_t tof2_nx[NMAX], tof2_ny[NMAX], tof2_nz[NMAX];
+  Double_t tof2_px[NMAX], tof2_py[NMAX], tof2_pz[NMAX];
+  Double_t t2[NMAX];
+
+  Double_t px[NMAX];
+  Double_t py[NMAX];
+  Double_t pz[NMAX];
+
+  TrekTof2Info();
+  ~TrekTof2Info();
+  ClassDef(TrekTof2Info,2);
+};
+
+class TrekPgcInfo: public TrekMCtree{
+public:
+  Int_t pid[NMAX], trid[NMAX]; // store user-define PID as well as the corresponding G4 trackID
+  Double_t pgc_E[NMAX], gamma_Ch[NMAX];
+  Double_t enePGC[NMAX];
+
+  TrekPgcInfo();
+  ~TrekPgcInfo();
+  ClassDef(TrekPgcInfo,2);
+};
+
+class TrekTtcInfo: public TrekMCtree{
+public:
+  Double_t gapNo[NMAX];
+  Int_t pid[NMAX], trid[NMAX]; // store user-define PID as well as the corresponding G4 trackID
+  Double_t ttc_E[NMAX]; //required for triggering
+
+  // surface outside the TTC for msc testing
+  Double_t ttcS_E[NMAX], ttcS_P[NMAX], ttc_pL[NMAX];
+  Double_t ttc_x[NMAX],  ttc_y[NMAX],  ttc_z[NMAX];
+  Double_t ttc_nx[NMAX], ttc_ny[NMAX], ttc_nz[NMAX];
+  Double_t ttc_px[NMAX], ttc_py[NMAX], ttc_pz[NMAX];
+  TrekTtcInfo();
+  ~TrekTtcInfo();
+  ClassDef(TrekTtcInfo,2);
+};
+
+class TrekCsiInfo: public TrekMCtree{
+public:
+  Int_t trid[NMAX]; //pid[NMAX],  store user-define PID as well as the corresponding G4 trackID
+  Double_t csiID[NMAX];
+  Double_t ECsI[NMAX], addEcsi[NMAX];
+  Double_t csi_x[NMAX], csi_y[NMAX], csi_z[NMAX];
+  Double_t csi_px[NMAX], csi_py[NMAX], csi_pz[NMAX];
+  Double_t csi_plen[NMAX], csi_phi[NMAX], csi_theta[NMAX];
+  Double_t t_CsI[NMAX];
+
+  TrekCsiInfo();
+  ~TrekCsiInfo();
+  ClassDef(TrekCsiInfo,2);
+};
+#endif
