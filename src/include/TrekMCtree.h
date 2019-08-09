@@ -37,15 +37,15 @@ public:
   Double_t tp_x[7], tp_y[7], tp_z[7], t_p[7];
   Double_t tgt_x[256], tgt_y[256], tgt_z[256];
   Double_t tgt_dirx, tgt_diry, tgt_dirz;
-  Double_t targetE;
+  Double_t targetE[7];
   Double_t genEne[10];
   Double_t tgtP[256];
   Double_t tgtPx[256], tgtPy[256], tgtPz[256];
   Double_t targetdE[256]; 
   Double_t targetdt[256];
-  Double_t targL;
+  Double_t targL[7];
   // target surface variables
-  Double_t sx, sy, sz, sE;
+  Double_t sx, sy, sz, sE[7];
   Double_t snx, sny, snz, totP;
   
   TrekTargetInfo();

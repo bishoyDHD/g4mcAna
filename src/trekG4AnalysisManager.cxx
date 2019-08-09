@@ -17,8 +17,8 @@ void trekG4AnalysisManager::beginRoot(std::string name){
   outFile=new TFile(name.c_str(),"RECREATE");
   h1angPi=new TH1D("h1angPi"," Opening angle of #pi^{+}#pi^{0}", 25, -1.05,1.05);
   h1angG=new TH1D("h1angG"," Opening angle of 2#gamma", 25, -1.05,1.05);
-  h1MassG=new TH1D("h1MassG"," Energy of 2#gamma", 75, 0.0,0.30);
-  h1invPi0=new TH1D("h1invPi0"," Invariant mass of #pi^{0}", 50, 0.0,0.20);
+  h1MassG=new TH1D("h1MassG"," Energy of 2#gamma", 75, 0.0,300.);
+  h1invPi0=new TH1D("h1invPi0"," Invariant mass of #pi^{0}", 50, 0.0,300.);
 }
 
 void trekG4AnalysisManager::writeRoot(){
@@ -30,6 +30,8 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
   TTree* pTree=(TTree*)pfile->Get("K+");
   pTree->SetBranchAddress("MCcsiInfo", (TObject **) &csiInfo);
   nentries=pTree->GetEntries();
+  double g1x, g1y, g1z;
+  double g2x, g2y, g2z;
   // Event loop...
   for(Int_t i=0; i<nentries; i++){
     pTree->GetEntry(i);
@@ -58,27 +60,32 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       d1=std::max_element(g1E.begin(), g1E.end())-g1E.begin();
       pos1=index1[d1]; //returns CsI copyID which will be used get physics info.
       // Get 4-vector info. and construct LV
-      g1px=csiInfo->csi_px[pos1]/GeV; g1py=csiInfo->csi_py[pos1]/GeV; g1pz=csiInfo->csi_pz[pos1]/GeV;
-      Eg1=Eg1/GeV;
+      g1px=csiInfo->csi_px[pos1]; g1py=csiInfo->csi_py[pos1]; g1pz=csiInfo->csi_pz[pos1];
+      //Eg1=Eg1/GeV;
       g1lv.SetPxPyPzE(g1px,g1py,g1pz,Eg1);
+      //g1lv.SetXYZT(g1x,g1y,g1z,Eg1);
+      g1x=csiInfo->csi_x[pos1]; g1y=csiInfo->csi_y[pos1]; g1z=csiInfo->csi_z[pos1];
       g1v3.SetXYZ(g1px,g1py,g1pz);
-      std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_px[pos1]<<std::endl;
+      std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_pz[pos1]<<std::endl;
       //gamma2
       // find max element and its corresponding index
       Eg2=*max_element(g2E.begin(), g2E.end());
       d2=std::max_element(g2E.begin(), g2E.end())-g2E.begin();
       pos2=index2[d2]; //returns unique CsI copyID which will be used get physics info.
       // Get 4-vector info. and construct LV
-      g2px=csiInfo->csi_px[pos2]/GeV; g2py=csiInfo->csi_py[pos2]/GeV; g2pz=csiInfo->csi_pz[pos2]/GeV;
-      Eg2=Eg2/GeV;
+      g2px=csiInfo->csi_px[pos2]; g2py=csiInfo->csi_py[pos2]; g2pz=csiInfo->csi_pz[pos2];
+      //Eg2=Eg2/GeV;
       g2lv.SetPxPyPzE(g2px,g2py,g2pz,Eg2);
+      //g2lv.SetXYZT(g2x,g2y,g2z,Eg2);
+      g2x=csiInfo->csi_x[pos2]; g2y=csiInfo->csi_y[pos2]; g2z=csiInfo->csi_z[pos2];
       g2v3.SetXYZ(g2px,g2py,g2pz);
-      std::cout<<" --- gamma2 the max element is: "<<Eg2<<"\t"<<pos2<<"\t"<<csiInfo->csi_px[pos2]<<std::endl;
+      std::cout<<" --- gamma2 the max element is: "<<Eg2<<"\t"<<pos2<<"\t"<<csiInfo->csi_pz[pos2]<<std::endl;
 
       // construct LV for pi0 from 2gamma LV
       pi0lv=g1lv+g2lv;
       // Fill ROOT histos
-      h1MassG->Fill(Eg1+Eg2);
+      //h1MassG->Fill(Eg1+Eg2);
+      h1MassG->Fill(pi0lv.E());
       h1invPi0->Fill(pi0lv.M());
       h1angG->Fill(std::cos(g1v3.Angle(g2v3)));
     }
