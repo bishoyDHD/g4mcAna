@@ -35,7 +35,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
   // Event loop...
   for(Int_t i=0; i<nentries; i++){
     pTree->GetEntry(i);
-    std::cout<<" ievt.. "<<i<<std::endl;
     g1E.clear();   index1.clear();
     g2E.clear();   index2.clear();
     for(int j=0; j<768; j++){
@@ -66,7 +65,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       //g1lv.SetXYZT(g1x,g1y,g1z,Eg1);
       g1x=csiInfo->csi_x[pos1]; g1y=csiInfo->csi_y[pos1]; g1z=csiInfo->csi_z[pos1];
       g1v3.SetXYZ(g1px,g1py,g1pz);
-      std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_pz[pos1]<<std::endl;
       //gamma2
       // find max element and its corresponding index
       Eg2=*max_element(g2E.begin(), g2E.end());
@@ -79,7 +77,12 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       //g2lv.SetXYZT(g2x,g2y,g2z,Eg2);
       g2x=csiInfo->csi_x[pos2]; g2y=csiInfo->csi_y[pos2]; g2z=csiInfo->csi_z[pos2];
       g2v3.SetXYZ(g2px,g2py,g2pz);
-      std::cout<<" --- gamma2 the max element is: "<<Eg2<<"\t"<<pos2<<"\t"<<csiInfo->csi_pz[pos2]<<std::endl;
+      if(i % 1000==0){
+        std::cout<<" ievt.. "<<i<<std::endl;
+        std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_pz[pos1]<<std::endl;
+        std::cout<<" --- gamma2 the max element is: "<<Eg2<<"\t"<<pos2<<"\t"<<csiInfo->csi_pz[pos2]<<std::endl;
+        std::cout<<"-----------------------------------------------------------\n";
+      }
 
       // construct LV for pi0 from 2gamma LV
       pi0lv=g1lv+g2lv;
@@ -91,6 +94,5 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     }
     // need to reset fired values to false
     fired1=false; fired2=false;
-    std::cout<<"-----------------------------------------------------------\n";
   }
 }
