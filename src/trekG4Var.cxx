@@ -1,12 +1,12 @@
-#include <trekVar.h>
+#include <trekG4Var.h>
 
-trekVar::trekVar():nameRoot("e36g4MC.root"){
-
-}
-trekVar::~trekVar(){
+trekG4Var::trekG4Var():nameRoot("e36g4MC.root"){
 
 }
-void trekVar::printUsage(std::string name){
+trekG4Var::~trekG4Var(){
+
+}
+void trekG4Var::printUsage(std::string name){
   std::cout<<" Usage:       "<<name<<" source"<<std::endl;
   std::cout<<" Must specify simulation file to be analyzed!!!"<<std::endl;
   std::cout<<" -f:          Name of the simulation file\n";
@@ -16,7 +16,7 @@ void trekVar::printUsage(std::string name){
   std::cout<<" -h:          Print this help menu\n";
 }
 
-bool trekVar::parseArgs(int argc, char** argv){
+bool trekG4Var::parseArgs(int argc, char** argv){
   if(argc==1) return false;
   bool writeHelp=false;
   for(int i=1; i<argc; i++){
