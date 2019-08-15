@@ -1,9 +1,6 @@
 #include "trekG4AnalysisManager.h"
 #include "trekG4Var.h"
 #include <TFile.h>
-#include <TTree.h>
-#include <TLorentzVector.h>
-#include <TVector2.h>
 #include <math.h>
 #include <iostream>
 using namespace std;
