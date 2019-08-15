@@ -1,15 +1,15 @@
-#ifndef trekVar_h
-#define trekVar_h 1
+#ifndef trekG4Var_h
+#define trekG4Var_h 1
 
 #include <algorithm>
 #include <iostream>
 #include <string>
 #include <stdexcept>
 
-class trekVar{
+class trekG4Var{
 public:
-  trekVar(); //default constructor
-  ~trekVar(); // destructor
+  trekG4Var(); //default constructor
+  ~trekG4Var(); // destructor
   void printUsage(std::string name);
   bool parseArgs(int argc, char** argv);
   std::string getFile(){return fileName;};

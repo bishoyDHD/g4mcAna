@@ -1,5 +1,5 @@
 #include "trekG4AnalysisManager.h"
-#include "trekVar.h"
+#include "trekG4Var.h"
 #include <TFile.h>
 #include <TTree.h>
 #include <TLorentzVector.h>
@@ -9,7 +9,7 @@
 using namespace std;
 
 int main(int argc,char** argv){
-  trekVar* pargs=new trekVar();
+  trekG4Var* pargs=new trekG4Var();
   if(!pargs->parseArgs(argc,argv)){
     pargs->printUsage("e36g4mcAna");
     return 0; //executes the exit procedure
