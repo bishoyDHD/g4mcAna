@@ -1,5 +1,5 @@
-#ifdef __CINT__
-
+#include <vector>
+#pragma link C++ class vector<UInt_t>+;
 #pragma link off all globals;
 #pragma link off all classes;
 #pragma link off all functions;
@@ -16,6 +16,3 @@
 #pragma link C++ class TrekPgcInfo+;
 #pragma link C++ class TrekTtcInfo+;
 #pragma link C++ class TrekCsiInfo+;
-
-#endif
-
