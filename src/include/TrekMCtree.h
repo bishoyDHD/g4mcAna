@@ -1,6 +1,7 @@
 #ifndef TrekMCtree_HH
 #define TrekMCtree_HH 1
 
+#include <array>
 #include "TObject.h"
 
 class TrekMCtree : public TObject {
@@ -32,18 +33,18 @@ public:
   Int_t n;
   //Double_t tg_x, tg_y, tg_z;
   //Double_t tp_x, tp_y, tp_z, t_p;
-  Double_t trid[7];
-  Double_t tg_x[7], tg_y[7], tg_z[7];
-  Double_t tp_x[7], tp_y[7], tp_z[7], t_p[7];
-  Double_t tgt_x[256], tgt_y[256], tgt_z[256];
+  std::array<Double_t,7> trid;
+  std::array<Double_t,7> tg_x, tg_y, tg_z;
+  std::array<Double_t,7> tp_x, tp_y, tp_z, t_p;
   Double_t tgt_dirx, tgt_diry, tgt_dirz;
-  Double_t targetE[7];
-  Double_t genEne[10];
-  Double_t tgtP[256];
-  Double_t tgtPx[256], tgtPy[256], tgtPz[256];
-  Double_t targetdE[256]; 
-  Double_t targetdt[256];
-  Double_t targL[7];
+  std::array<Double_t,7> targetE;
+  std::array<Double_t,7> genEne;
+  std::array<Double_t,256> tgt_x, tgt_y, tgt_z;
+  std::array<Double_t,256> tgtP;
+  std::array<Double_t,256> tgtPx, tgtPy, tgtPz;
+  std::array<Double_t,256> targetdE;
+  std::array<Double_t,256> targetdt;
+  std::array<Double_t,7> targL;
   // target surface variables
   Double_t sx, sy, sz, sE[7];
   Double_t snx, sny, snz, totP;
@@ -135,7 +136,7 @@ public:
 
 class TrekGvInfo: public TrekMCtree{
 public:
-  Double_t eneGapVeto[12];
+  std::array<Double_t,12> eneGapVeto;
 
   TrekGvInfo();
   ~TrekGvInfo();
@@ -144,16 +145,16 @@ public:
 
 class TrekTof2Info: public TrekMCtree{
 public:
-  Int_t gapNo[12];
-  Double_t tof2_E[12], tof2_P[12], tof2_pL[12];
-  Double_t tof2_x[12], tof2_y[12], tof2_z[12];
-  Double_t tof2_nx[12], tof2_ny[12], tof2_nz[12];
-  Double_t tof2_px[12], tof2_py[12], tof2_pz[12];
-  Double_t t2[12];
+  std::array<Int_t,12> gapNo;
+  std::array<Double_t,12> tof2_E, tof2_P, tof2_pL;
+  std::array<Double_t,12> tof2_x, tof2_y, tof2_z;
+  std::array<Double_t,12> tof2_nx, tof2_ny, tof2_nz;
+  std::array<Double_t,12> tof2_px, tof2_py, tof2_pz;
+  std::array<Double_t,12> t2;
 
-  Double_t px[12];
-  Double_t py[12];
-  Double_t pz[12];
+  std::array<Double_t,12> px;
+  std::array<Double_t,12> py;
+  std::array<Double_t,12> pz;
 
   TrekTof2Info();
   ~TrekTof2Info();
@@ -163,7 +164,7 @@ public:
 class TrekPgcInfo: public TrekMCtree{
 public:
   Double_t pgc_E, gamma_Ch;
-  Double_t enePGC[12];
+  std::array<Double_t,12> enePGC;
 
   TrekPgcInfo();
   ~TrekPgcInfo();
@@ -172,14 +173,14 @@ public:
 
 class TrekTtcInfo: public TrekMCtree{
 public:
-  Int_t gapNo[12];
-  Double_t ttc_E[12]; //required for triggering
+  std::array<Int_t,12> gapNo;
+  std::array<Double_t,12> ttc_E; //required for triggering
 
   // surface outside the TTC for msc testing
-  Double_t ttcS_E[12], ttcS_P[12], ttc_pL[12];
-  Double_t ttc_x[12],  ttc_y[12],  ttc_z[12];
-  Double_t ttc_nx[12], ttc_ny[12], ttc_nz[12];
-  Double_t ttc_px[12], ttc_py[12], ttc_pz[12];
+  std::array<Double_t,12> ttcS_E, ttcS_P, ttc_pL;
+  std::array<Double_t,12> ttc_x,  ttc_y,  ttc_z;
+  std::array<Double_t,12> ttc_nx, ttc_ny, ttc_nz;
+  std::array<Double_t,12> ttc_px, ttc_py, ttc_pz;
   TrekTtcInfo();
   ~TrekTtcInfo();
   ClassDef(TrekTtcInfo,2);
@@ -187,12 +188,12 @@ public:
 
 class TrekCsiInfo: public TrekMCtree{
 public:
-  Int_t csiID[768], trackID[768];
-  Double_t ECsI[768], addEcsi[768];
-  Double_t csi_x[768], csi_y[768], csi_z[768];
-  Double_t csi_px[768], csi_py[768], csi_pz[768];
-  Double_t csi_plen[768], csi_phi[768], csi_theta[768];
-  Double_t t_CsI[768];
+  std::array<Int_t,768> csiID, trackID;
+  std::array<Double_t,768> ECsI, addEcsi;
+  std::array<Double_t,768> csi_x, csi_y, csi_z;
+  std::array<Double_t,768> csi_px, csi_py, csi_pz;
+  std::array<Double_t,768> csi_plen, csi_phi, csi_theta;
+  std::array<Double_t,768> t_CsI;
 
   TrekCsiInfo();
   ~TrekCsiInfo();
