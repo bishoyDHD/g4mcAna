@@ -35,7 +35,7 @@ ROOT_GENERATE_DICTIONARY(dictDir ${CMAKE_CURRENT_SOURCE_DIR}/src/include/TrekMCt
 
 
 #add binary called "e32g4mcAna" built from main.cxx
-add_executable(e36g4mcAna main.cxx dictDir ${sources} ${headers})
+add_executable(e36g4mcAna e36g4mcAna.cxx dictDir ${sources} ${headers})
 
 #link executable to the e36g4mcAna
 target_link_libraries(e36g4mcAna "-L${ROOT_LIBRARY_DIR}" ${ROOT_LIBRARIES})
