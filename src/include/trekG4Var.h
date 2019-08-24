@@ -15,9 +15,10 @@ public:
   std::string getFile(){return fileName;};
   std::string getName(){return nameRoot;};
   int getMaxN(){return nmax;};
+  int getChannel(){return channel;};
 private:
   std::string fileName;
   std::string nameRoot;
-  int nmax;
+  int nmax, channel;
 };
 #endif

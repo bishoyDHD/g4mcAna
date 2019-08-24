@@ -16,8 +16,9 @@ int main(int argc,char** argv){
   std::string fileName=pargs->getFile();
   TFile *file=new TFile(fileName.c_str());
   string name=pargs->getName();
+  int channel=pargs->getChannel();
   trekG4AnalysisManager* trekMC=new trekG4AnalysisManager();
-  trekMC->beginRoot(name);
+  trekMC->beginRoot(name, channel);
   trekMC->analyze(file);
   trekMC->writeRoot();
 

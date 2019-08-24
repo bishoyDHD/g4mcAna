@@ -1,42 +1,75 @@
 #include "trekG4AnalysisManager.h"
 
 trekG4AnalysisManager::trekG4AnalysisManager(){
-  fired1=false;
-  fired2=false;
+  fired1=false;     tof1Info=NULL;
+  fired2=false;     tof2Info=NULL;
+  evtInfo=NULL;     ttcInfo=NULL;
+  tgtInfo=NULL;
   csiInfo=NULL;
+  mwpcInfo=NULL;
+  clust=new trekG4Cluster();
 }
 
 trekG4AnalysisManager::~trekG4AnalysisManager(){
-  delete h1angPi;
-  delete h1angG;
-  delete h1MassG;
-  delete h1invPi0;
+  delete clust;
 }
 
-void trekG4AnalysisManager::beginRoot(std::string name){
+void trekG4AnalysisManager::beginRoot(std::string name,int channel){
   outFile=new TFile(name.c_str(),"RECREATE");
-  h1angPi=new TH1D("h1angPi"," Opening angle of #pi^{+}#pi^{0}", 25, -1.05,1.05);
-  h1angG=new TH1D("h1angG"," Opening angle of 2#gamma", 25, -1.05,1.05);
-  h1MassG=new TH1D("h1MassG"," Energy of 2#gamma", 75, 0.0,300.);
-  h1invPi0=new TH1D("h1invPi0"," Invariant mass of #pi^{0}", 50, 0.0,300.);
+  switch(channel){
+    case 7:
+      n1="Opening angle between #pi^{+}#pi^{0}: cos(#theta_{#pi^{+}#pi^{0}})";
+      n2="Opening angle between 2#gamma: cos(#theta_{2#gamma})";
+      n3="2#gamma total energy: E_{2#gamma}";
+      n4="Invariant mass of #pi^{0}";
+      clust->defHistos(n1,n2,n3,n4);
+      break;
+    case 14:
+      n1="Opening angle between #pi^{+}#pi^{0}: cos(#theta_{#pi^{+}#pi^{0}})";
+      n2="Opening angle between e^{+}e^{-}: cos(#theta_{e^{+}e^{-}})";
+      n3="Total energy of e^{+}e^{-}: E_{e^{+}e^{-}}";
+      n4="Invariant mass of A^{'}";
+      clust->defHistos(n1,n2,n3,n4);
+      break;
+  }// end of swith statement
 }
 
 void trekG4AnalysisManager::writeRoot(){
   outFile->Write();
+  clust->plotHistos();
   outFile->Close();
 }
 
 void trekG4AnalysisManager::analyze(TFile* pfile){
   TTree* pTree=(TTree*)pfile->Get("K+");
+  pTree->SetBranchAddress("MCevtInfo", (TObject **) &evtInfo);
+  pTree->SetBranchAddress("MCtgtInfo", (TObject **) &tgtInfo);
+  pTree->SetBranchAddress("MCmwpcInfo", (TObject **) &mwpcInfo);
   pTree->SetBranchAddress("MCcsiInfo", (TObject **) &csiInfo);
+  pTree->SetBranchAddress("MCttcInfo", (TObject **) &ttcInfo);
+  pTree->SetBranchAddress("MCtof1Info", (TObject **) &tof1Info);
+  pTree->SetBranchAddress("MCtof2Info", (TObject **) &tof2Info);
   nentries=pTree->GetEntries();
   double g1x, g1y, g1z;
   double g2x, g2y, g2z;
   // Event loop...
+  std::cout<<" Entering event loop... \n";
   for(Int_t i=0; i<nentries; i++){
     pTree->GetEntry(i);
     g1E.clear();   index1.clear();
     g2E.clear();   index2.clear();
+    // make sure this is a good event: 
+    // Check experimental trigger condition. 
+    // Skip if not triggered
+    for(int n=0; n<12;n++){
+      for(int m=0; m<3;m++){
+        if(tgtInfo->targetE[m]==-10000 || tof1Info->tof1_E==-1000){
+          if(ttcInfo->ttc_E[n]==-10000 || tof2Info->tof2_E[n]==-1000){
+	    goto endLoop;
+	  }
+	}
+      }
+    }
     for(int j=0; j<768; j++){
       if(csiInfo->csi_x[j]!=-10000){
         if(csiInfo->trackID[j]==2){
@@ -50,7 +83,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
 	  index2.push_back(j);
 	}
       }
-    }
+    } // end of CsI for loop
     if(fired1 && fired2){
       //gamma1
       // find max element and its corresponding index
@@ -60,11 +93,11 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       pos1=index1[d1]; //returns CsI copyID which will be used get physics info.
       // Get 4-vector info. and construct LV
       g1px=csiInfo->csi_px[pos1]; g1py=csiInfo->csi_py[pos1]; g1pz=csiInfo->csi_pz[pos1];
-      //Eg1=Eg1/GeV;
       g1lv.SetPxPyPzE(g1px,g1py,g1pz,Eg1);
-      //g1lv.SetXYZT(g1x,g1y,g1z,Eg1);
       g1x=csiInfo->csi_x[pos1]; g1y=csiInfo->csi_y[pos1]; g1z=csiInfo->csi_z[pos1];
       g1v3.SetXYZ(g1px,g1py,g1pz);
+      tgt1E=tgtInfo->sE[1];
+      tgt1pl=tgtInfo->targL[1];
       //gamma2
       // find max element and its corresponding index
       Eg2=*max_element(g2E.begin(), g2E.end());
@@ -77,6 +110,11 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       //g2lv.SetXYZT(g2x,g2y,g2z,Eg2);
       g2x=csiInfo->csi_x[pos2]; g2y=csiInfo->csi_y[pos2]; g2z=csiInfo->csi_z[pos2];
       g2v3.SetXYZ(g2px,g2py,g2pz);
+      tgt2E=tgtInfo->sE[2];
+      tgt2pl=tgtInfo->targL[2];
+      // Fill various histograms
+      //clust->targetEloss(tgt1E,tgt1pl,tgt2E,tgt2pl);
+      //clust->fillHistos(g1px,g1py,g1pz,Eg1,g2px,g2py,g2pz,Eg2);
       if(i % 1000==0){
         std::cout<<" ievt.. "<<i<<std::endl;
         std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_pz[pos1]<<std::endl;
@@ -88,11 +126,9 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       pi0lv=g1lv+g2lv;
       // Fill ROOT histos
       //h1MassG->Fill(Eg1+Eg2);
-      h1MassG->Fill(pi0lv.E());
-      h1invPi0->Fill(pi0lv.M());
-      h1angG->Fill(std::cos(g1v3.Angle(g2v3)));
     }
+    endLoop:
     // need to reset fired values to false
     fired1=false; fired2=false;
-  }
+  } // end of event loop
 }
