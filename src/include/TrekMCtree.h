@@ -1,8 +1,10 @@
 #ifndef TrekMCtree_HH
 #define TrekMCtree_HH 1
 
+#include <map>
 #include <array>
-#include "TObject.h"
+#include <TObject.h>
+#include <TString.h>
 
 class TrekMCtree : public TObject {
 public:
@@ -47,6 +49,7 @@ public:
   std::array<Double_t,7> targL;
   // target surface variables
   Double_t sx, sy, sz, sE[7];
+  std::map<Int_t,TString> particleDef;
   Double_t snx, sny, snz, totP;
   
   TrekTargetInfo();
@@ -188,6 +191,8 @@ public:
 
 class TrekCsiInfo: public TrekMCtree{
 public:
+  std::array<TString,768> particle;
+  std::array<Int_t,768> lable, lablePi01, lablePi02;
   std::array<Int_t,768> csiID, trackID;
   std::array<Double_t,768> ECsI, addEcsi;
   std::array<Double_t,768> csi_x, csi_y, csi_z;

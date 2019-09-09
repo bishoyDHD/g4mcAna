@@ -17,10 +17,14 @@ int main(int argc,char** argv){
   TFile *file=new TFile(fileName.c_str());
   string name=pargs->getName();
   int channel=pargs->getChannel();
+  std::cout<<" ...current channel number is: "<<channel<<std::endl;
   trekG4AnalysisManager* trekMC=new trekG4AnalysisManager();
   trekMC->beginRoot(name, channel);
   trekMC->analyze(file);
   trekMC->writeRoot();
+  // delete respective pointers
+  delete trekMC;
+  delete file;
 
   return 0;
 }

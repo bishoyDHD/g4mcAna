@@ -1,8 +1,10 @@
 #include "trekG4AnalysisManager.h"
 
 trekG4AnalysisManager::trekG4AnalysisManager(){
+  std::cout<<" --- Starting trekG4AnalysisManager...\n";
   fired1=false;     tof1Info=NULL;
   fired2=false;     tof2Info=NULL;
+  fired3=false;
   evtInfo=NULL;     ttcInfo=NULL;
   tgtInfo=NULL;
   csiInfo=NULL;
@@ -11,25 +13,36 @@ trekG4AnalysisManager::trekG4AnalysisManager(){
 }
 
 trekG4AnalysisManager::~trekG4AnalysisManager(){
+  std::cout<<" --- Exiting trekG4AnalysisManager...\n";
   delete clust;
 }
-
+// Method is needed for assigning various cluster particles
+// will be used for cluster PID in CsI(Tl)
+void trekG4AnalysisManager::setClusterPID(std::string pid1,std::string pid2,std::string pid3,std::string pid4,std::string pid5,std::string pid6){
+  clustPid1=pid1;     clustPid4=pid4;
+  clustPid2=pid2;     clustPid5=pid5;
+  clustPid3=pid3;     clustPid6=pid6;
+}
 void trekG4AnalysisManager::beginRoot(std::string name,int channel){
   outFile=new TFile(name.c_str(),"RECREATE");
   switch(channel){
     case 7:
+      std::cout<<" --- Checking out channel numnber 7 for kicks!!! \n";
       n1="Opening angle between #pi^{+}#pi^{0}: cos(#theta_{#pi^{+}#pi^{0}})";
       n2="Opening angle between 2#gamma: cos(#theta_{2#gamma})";
       n3="2#gamma total energy: E_{2#gamma}";
       n4="Invariant mass of #pi^{0}";
       clust->defHistos(n1,n2,n3,n4);
+      setClusterPID("gamma","gamma",dummy,dummy,dummy,dummy);
       break;
     case 14:
+      std::cout<<" --- Alright Channel 14 is ready for business!!! \n";
       n1="Opening angle between #pi^{+}#pi^{0}: cos(#theta_{#pi^{+}#pi^{0}})";
       n2="Opening angle between e^{+}e^{-}: cos(#theta_{e^{+}e^{-}})";
       n3="Total energy of e^{+}e^{-}: E_{e^{+}e^{-}}";
       n4="Invariant mass of A^{'}";
       clust->defHistos(n1,n2,n3,n4);
+      setClusterPID("e+","e-",dummy,dummy,dummy,dummy);
       break;
   }// end of swith statement
 }
@@ -52,13 +65,17 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
   nentries=pTree->GetEntries();
   double g1x, g1y, g1z;
   double g2x, g2y, g2z;
+  double g3x, g3y, g3z;
+  int labelPi0;
   // Event loop...
   std::cout<<" Entering event loop... \n";
   for(Int_t i=0; i<nentries; i++){
     pTree->GetEntry(i);
+    // clear these entries at the beginning of every event
     g1E.clear();   index1.clear();
     g2E.clear();   index2.clear();
-    // make sure this is a good event: 
+    g3E.clear();   index3.clear();
+    // make sure this is a good gap event: 
     // Check experimental trigger condition. 
     // Skip if not triggered
     for(int n=0; n<12;n++){
@@ -72,20 +89,27 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     }
     for(int j=0; j<768; j++){
       if(csiInfo->csi_x[j]!=-10000){
-        if(csiInfo->trackID[j]==2){
+        labelPi0=csiInfo->lablePi01[j];
+        //if(labelPi0!=0) goto endLoop;
+        if(csiInfo->trackID[j]==2 && csiInfo->particle[j]==clustPid1){
 	  fired1=true;
 	  g1E.push_back(csiInfo->ECsI[j]);
 	  index1.push_back(j);
 	}
-        if(csiInfo->trackID[j]==3){
+        if(csiInfo->trackID[j]==3 && csiInfo->particle[j]==clustPid2){
 	  fired2=true;
 	  g2E.push_back(csiInfo->ECsI[j]);
 	  index2.push_back(j);
 	}
+        if(csiInfo->trackID[j]==4){
+	  fired3=true;
+	  g3E.push_back(csiInfo->ECsI[j]);
+	  index3.push_back(j);
+	}
       }
     } // end of CsI for loop
     if(fired1 && fired2){
-      //gamma1
+      // particle 1
       // find max element and its corresponding index
       GeV=1000.0;
       Eg1=*max_element(g1E.begin(), g1E.end());
@@ -93,42 +117,69 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       pos1=index1[d1]; //returns CsI copyID which will be used get physics info.
       // Get 4-vector info. and construct LV
       g1px=csiInfo->csi_px[pos1]; g1py=csiInfo->csi_py[pos1]; g1pz=csiInfo->csi_pz[pos1];
-      g1lv.SetPxPyPzE(g1px,g1py,g1pz,Eg1);
       g1x=csiInfo->csi_x[pos1]; g1y=csiInfo->csi_y[pos1]; g1z=csiInfo->csi_z[pos1];
-      g1v3.SetXYZ(g1px,g1py,g1pz);
       tgt1E=tgtInfo->sE[1];
       tgt1pl=tgtInfo->targL[1];
-      //gamma2
+      // particle 2
       // find max element and its corresponding index
       Eg2=*max_element(g2E.begin(), g2E.end());
       d2=std::max_element(g2E.begin(), g2E.end())-g2E.begin();
       pos2=index2[d2]; //returns unique CsI copyID which will be used get physics info.
       // Get 4-vector info. and construct LV
       g2px=csiInfo->csi_px[pos2]; g2py=csiInfo->csi_py[pos2]; g2pz=csiInfo->csi_pz[pos2];
-      //Eg2=Eg2/GeV;
-      g2lv.SetPxPyPzE(g2px,g2py,g2pz,Eg2);
-      //g2lv.SetXYZT(g2x,g2y,g2z,Eg2);
       g2x=csiInfo->csi_x[pos2]; g2y=csiInfo->csi_y[pos2]; g2z=csiInfo->csi_z[pos2];
-      g2v3.SetXYZ(g2px,g2py,g2pz);
       tgt2E=tgtInfo->sE[2];
       tgt2pl=tgtInfo->targL[2];
+      // detected charged particle vertex info.
+      primpx=tgtInfo->tp_x[0];
+      primpy=tgtInfo->tp_y[0];
+      primpz=tgtInfo->tp_z[0];
+      Eprim=.10854562540178539;
+      primlen=tgtInfo->targL[0];
+      // Set variables in case of 3-cluster events
+      if(fired3){ // For now this is a special Kpi2 case for pi0->e+e-gamma
+        // particle 3
+        // find max element and its corresponding index
+        Eg3=*max_element(g3E.begin(), g3E.end());
+        d3=std::max_element(g3E.begin(), g3E.end())-g3E.begin();
+        pos3=index3[d3]; //returns unique CsI copyID which will be used get physics info.
+        // Get 4-vector info. and construct LV
+        g3px=csiInfo->csi_px[pos3]; g3py=csiInfo->csi_py[pos3]; g2pz=csiInfo->csi_pz[pos3];
+        tgt3E=tgtInfo->sE[3];
+        tgt3pl=tgtInfo->targL[3];
+        g3x=csiInfo->csi_x[pos3]; g3y=csiInfo->csi_y[pos3]; g3z=csiInfo->csi_z[pos3];
+	// fill target variables
+        clust->target3Eloss(tgt1E,tgt1pl);
+        clust->target4Eloss(tgt2E,tgt2pl);
+        clust->target1Eloss(tgt3E,tgt3pl);
+	// fill 3 & 4-vector variables
+	clust->setParticle3(g1px, g1py, g1pz, Eg1);
+	clust->setParticle4(g2px, g2py, g2pz, Eg2);
+	clust->setParticle1(g3px, g3py, g3pz, Eg3);
+	goto endLoop;
+      }
+      // fill target variables
+      clust->target1Eloss(tgt1E,tgt1pl);
+      clust->target2Eloss(tgt2E,tgt2pl);
+      // fill 3 & 4-vector variables
+      clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
+      clust->setParticle1(g1px, g1py, g1pz, Eg1);
+      clust->setParticle2(g2px, g2py, g2pz, Eg2);
       // Fill various histograms
       //clust->targetEloss(tgt1E,tgt1pl,tgt2E,tgt2pl);
-      //clust->fillHistos(g1px,g1py,g1pz,Eg1,g2px,g2py,g2pz,Eg2);
+      clust->setPi0label(labelPi0);
+      clust->fillHistos();
       if(i % 1000==0){
         std::cout<<" ievt.. "<<i<<std::endl;
-        std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_pz[pos1]<<std::endl;
+	//std::cout<<" --- pi0 channel label is:      "<<evtInfo->lablePi01<<std::endl;
+        std::cout<<" --- charged particle px,py,pz: "<<primpx<<"\t"<<primpy<<"\t"<<primpz<<std::endl;
+        std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_pz[pos1]<<"\t"<<csiInfo->particle[pos1]<<std::endl;
         std::cout<<" --- gamma2 the max element is: "<<Eg2<<"\t"<<pos2<<"\t"<<csiInfo->csi_pz[pos2]<<std::endl;
         std::cout<<"-----------------------------------------------------------\n";
       }
-
-      // construct LV for pi0 from 2gamma LV
-      pi0lv=g1lv+g2lv;
-      // Fill ROOT histos
-      //h1MassG->Fill(Eg1+Eg2);
     }
     endLoop:
     // need to reset fired values to false
-    fired1=false; fired2=false;
+    fired1=false; fired2=false;  fired3=false;
   } // end of event loop
 }
