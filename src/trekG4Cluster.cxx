@@ -111,15 +111,12 @@ void trekG4Cluster::fillHistos(){
   par2lv.SetPxPyPzE(par2px,par2py,par2pz,par2E);
   piPlv.SetPxPyPzE(primtgt1px,primtgt1py,primtgt1pz,prm1E);
   //std::cout<<" --- checking the pi0 channel: "<<labelPi0<<std::endl;
-  if(labelPi0==0){
-    pi0lv=par1lv+par2lv;
-  }else if(labelPi0==1){
-    pi0lv=par1lv+par3lv+par4lv;
-    par3lv.SetPxPyPzE(par3px,par3py,par3pz,par3E);
-    par4lv.SetPxPyPzE(par4px,par4py,par4pz,par4E);
-    par3v3.SetXYZ(par3px,par3py,par3pz);
-    par4v3.SetXYZ(par4px,par4py,par4pz);
-  }
+  pi0lv=par1lv+par2lv;
+  //pi0lv=par1lv+par3lv+par4lv;
+  //par3lv.SetPxPyPzE(par3px,par3py,par3pz,par3E);
+  //par4lv.SetPxPyPzE(par4px,par4py,par4pz,par4E);
+  //par3v3.SetXYZ(par3px,par3py,par3pz);
+  //par4v3.SetXYZ(par4px,par4py,par4pz);
   // TVector3 for opening angle determination
   par1v3.SetXYZ(par1px,par1py,par1pz);
   par2v3.SetXYZ(par2px,par2py,par2pz);
@@ -129,12 +126,10 @@ void trekG4Cluster::fillHistos(){
   // fill histograms accordingly
   h1inv->Fill(pi0lv.M());
   h1Etot->Fill(pi0lv.E());
-  if(labelPi0==0){
-    opAng1=std::cos(piPv3.Angle(pi0v3));
-    opAng2=std::cos(par1v3.Angle(par2v3));
-    h1ang2->Fill(opAng2);
-    h1ang1->Fill(opAng1);
-  }
+  opAng1=std::cos(piPv3.Angle(pi0v3));
+  opAng2=std::cos(par1v3.Angle(par2v3));
+  h1ang2->Fill(opAng2);
+  h1ang1->Fill(opAng1);
 }
 // --------------->  PLOT HISTOGRAMS <----------------
 void trekG4Cluster::plotHistos(){
