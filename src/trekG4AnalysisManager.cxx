@@ -34,15 +34,19 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       n4="Invariant mass of #pi^{0}";
       clust->defHistos(n1,n2,n3,n4);
       setClusterPID("gamma","gamma",dummy,dummy,dummy,dummy);
+      clust->setPID("#gamma1","#gamma2",dummy,dummy,dummy,dummy);
+      clust->primaryPID("#pi^{+}","#pi^{0}",dummy,dummy);
       break;
     case 14:
       std::cout<<" --- Alright Channel 14 is ready for business!!! \n";
-      n1="Opening angle between #pi^{+}#pi^{0}: cos(#theta_{#pi^{+}#pi^{0}})";
+      n1="Opening angle between #mu^{+}A': cos(#theta_{#mu^{+}A'})";
       n2="Opening angle between e^{+}e^{-}: cos(#theta_{e^{+}e^{-}})";
       n3="Total energy of e^{+}e^{-}: E_{e^{+}e^{-}}";
-      n4="Invariant mass of A^{'}";
+      n4="Invariant mass of A'";
       clust->defHistos(n1,n2,n3,n4);
       setClusterPID("e+","e-",dummy,dummy,dummy,dummy);
+      clust->setPID("e^{+}","e^{-}",dummy,dummy,dummy,dummy);
+      clust->primaryPID("#mu^{+}","A'",dummy,dummy);
       break;
   }// end of swith statement
 }

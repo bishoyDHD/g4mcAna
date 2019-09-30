@@ -166,8 +166,9 @@ public:
 
 class TrekPgcInfo: public TrekMCtree{
 public:
-  Double_t pgc_E, gamma_Ch;
-  std::array<Double_t,12> enePGC;
+  std::array<Double_t,12> pgc_E;
+  std::array<Double_t,12> time;
+  std::array<TString,12> particle;
 
   TrekPgcInfo();
   ~TrekPgcInfo();
