@@ -31,6 +31,7 @@ public:
   void setParticle4(double px,double py,double pz,double energy);
   void calcMolierRad(double px,double py,double pz,double energy);
   void plotHistos();
+  void setClusterVar(int j,double Enecsi);
 private:
   std::string tgtn1, tgtn2, tgtn3, tgtcorr;
   std::string primPid1, primPid2, primPid3, primPid4;
@@ -52,7 +53,7 @@ private:
   std::map<int,std::pair<double,double>> csiMap;
   std::map<std::pair<double,double>,double> csiClust;
   int csiID;
-  double Ecsi;
+  double Ecsi,theta,phi;
   double opAng1, opAng2; // opAng1 is for pi+pi0
   TH1D* h1ang1,*h1ang2,*h1ang3,*h1Etot,*h1inv;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;

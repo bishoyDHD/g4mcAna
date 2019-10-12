@@ -66,7 +66,14 @@ void trekG4Cluster::setcsiMap(const std::map<int,std::pair<double,double>> &csim
   // insert into csiMap the element of csimap
   csiMap.insert(csimap.begin(),csimap.end());
   //std::cout<<" checking the mapping here "<<csiMap[767].first<<" "<<csiMap[767].second<<"\n";
-  //csiClust[csimap[csiID]]=Ecsi;
+}
+void trekG4Cluster::setClusterVar(int j,double EneCsI){
+  Ecsi=EneCsI; // set CsI energy
+  csiID=j;
+  csiClust[csiMap[csiID]]=Ecsi;
+  // set respective angles
+  theta=csiMap[csiID].first;
+  phi=csiMap[csiID].second;
 }
 // Set values for different partilces and 
 // construct corresponding Lorentz vectors
