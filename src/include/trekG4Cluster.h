@@ -1,6 +1,7 @@
 #ifndef trekG4Cluster_h
 #define trekG4Cluster_h 1
 #include <string>
+#include <map>
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TList.h>
@@ -17,6 +18,7 @@ public:
   void setPID(std::string pid1,std::string pid2,std::string pid3,std::string pid4,std::string pid5,std::string pid6);
   void primaryPID(std::string p1,std::string p2,std::string p3,std::string p4);
   void primtgtEloss(double px,double py,double pz,double tgtE,double tgtpL);
+  void setcsiMap(const std::map<int,std::pair<double,double>> &csiMap);
   void setPrimVect3(double x,double y,double z);
   void target1Eloss(double tgtE,double tgtpL);
   void target2Eloss(double tgtE,double tgtpL);
@@ -27,6 +29,7 @@ public:
   void setParticle2(double px,double py,double pz,double energy);
   void setParticle3(double px,double py,double pz,double energy);
   void setParticle4(double px,double py,double pz,double energy);
+  void calcMolierRad(double px,double py,double pz,double energy);
   void plotHistos();
 private:
   std::string tgtn1, tgtn2, tgtn3, tgtcorr;
@@ -45,6 +48,11 @@ private:
   double targE2, targPl2;
   double targE3, targPl3;
   double targE4, targPl4;
+  // cluster map
+  std::map<int,std::pair<double,double>> csiMap;
+  std::map<std::pair<double,double>,double> csiClust;
+  int csiID;
+  double Ecsi;
   double opAng1, opAng2; // opAng1 is for pi+pi0
   TH1D* h1ang1,*h1ang2,*h1ang3,*h1Etot,*h1inv;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;

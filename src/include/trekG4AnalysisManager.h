@@ -32,7 +32,7 @@ private:
   double g3px, g3py, g3pz, Eg3;
   double primpx, primpy, primpz, Eprim,primlen;
   double tgt1E, tgt1pl, tgt2E, tgt2pl, tgt3E, tgt3pl;
-  const double tgtE .018; //average E-loss
+  const double tgtE=.018; //average E-loss
   std::vector<double> g1E, g2E, g3E, piE;
   std::vector<int> index1, index2, index3;
   std::string n1, n2, n3, n4; // hist names for diff. channels

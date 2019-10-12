@@ -62,6 +62,12 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
     h2Eloss[i]=new TH2D(h2E.str().c_str(),tgtn3.c_str(),50,0.0,100.,25,0.0,0.05);
   }
 }
+void trekG4Cluster::setcsiMap(const std::map<int,std::pair<double,double>> &csimap){
+  // insert into csiMap the element of csimap
+  csiMap.insert(csimap.begin(),csimap.end());
+  std::cout<<" checking the mapping here "<<csiMap[767].first<<" "<<csiMap[767].second<<"\n";
+  //csiClust[csimap[csiID]]=Ecsi;
+}
 // Set values for different partilces and 
 // construct corresponding Lorentz vectors
 // --------------->  SET TARGET VARIABLES <----------------
