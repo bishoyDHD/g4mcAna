@@ -1,3 +1,4 @@
+// Mapper class for the CsI from e36g4MC
 #ifndef trekG4CsImapper_H
 #define trekG4CsImapper_H 1
 

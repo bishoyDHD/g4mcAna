@@ -1,5 +1,6 @@
 #include "trekG4AnalysisManager.h"
 #include "trekG4Var.h"
+#include "trekG4CsImapper.h"
 #include <TFile.h>
 #include <math.h>
 #include <iostream>
@@ -7,6 +8,8 @@ using namespace std;
 
 int main(int argc,char** argv){
   trekG4Var* pargs=new trekG4Var();
+  trekG4CsImapper map;
+  map.readMap();
   if(!pargs->parseArgs(argc,argv)){
     pargs->printUsage("e36g4mcAna");
     return 0; //executes the exit procedure

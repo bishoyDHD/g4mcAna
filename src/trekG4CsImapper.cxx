@@ -30,5 +30,4 @@ void trekG4CsImapper::readMap(){
   }
   // pass on the map to the trekG4Cluster class
   fcluster->setcsiMap(csiMap);
-  //std::cout<<" checking mapping "<<csiMap[767].first<<" "<<csiMap[767].second<<"\n";
 }
