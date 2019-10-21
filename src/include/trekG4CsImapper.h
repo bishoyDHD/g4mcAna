@@ -8,15 +8,16 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "trekG4Cluster.h"
 
 class trekG4CsImapper{
 public:
   trekG4CsImapper();
   ~trekG4CsImapper();
-  void setCsImap(int csiID,int crysType,int iphi,int fb);
-  std::map<int,std::pair<int,int>> getcsiMap();
+  inline void setCsImap(int csiID,int crysType,int iphi,int fb);
+  inline std::map<int,std::pair<double,double>> getcsiMap(){return csiMap;};
   void readMap(); // actually read csiMap.dat file
+  // to called whenever the program executes
+  void init();
 private:
   // theta angles
   double mTheta[2][10]={86.25,78.75,71.25,63.75,56.25,48.75,41.25,33.75,26.25,18.75,
@@ -46,6 +47,5 @@ private:
   std::map<std::pair<double,double>,double> csiClust;
   std::string fname;
   std::ifstream mapFile;
-  trekG4Cluster* fcluster;
 };
 #endif

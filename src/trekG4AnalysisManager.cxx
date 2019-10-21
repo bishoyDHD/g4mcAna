@@ -2,6 +2,14 @@
 
 trekG4AnalysisManager::trekG4AnalysisManager(){
   std::cout<<" --- Starting trekG4AnalysisManager...\n";
+  csiMapper=new trekG4CsImapper();
+  clust=new trekG4Cluster();
+}
+void trekG4AnalysisManager::init(){
+  // order is important here
+  // trekG4CsiMapper() must be initialized before trekG4Cluster()
+  csiMapper->init();
+  clust->init();
   fired1=false;     tof1Info=NULL;
   fired2=false;     tof2Info=NULL;
   fired3=false;
@@ -9,12 +17,11 @@ trekG4AnalysisManager::trekG4AnalysisManager(){
   tgtInfo=NULL;
   csiInfo=NULL;
   mwpcInfo=NULL;
-  clust=new trekG4Cluster();
 }
-
 trekG4AnalysisManager::~trekG4AnalysisManager(){
   std::cout<<" --- Exiting trekG4AnalysisManager...\n";
   delete clust;
+  delete csiMapper;
 }
 // Method is needed for assigning various cluster particles
 // will be used for cluster PID in CsI(Tl)
@@ -79,43 +86,41 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     g1E.clear();   index1.clear();
     g2E.clear();   index2.clear();
     g3E.clear();   index3.clear();
+      clust->empty();
     // make sure this is a good gap event: 
     // Check experimental trigger condition. 
     // Skip if not triggered
     for(int n=0; n<12;n++){
       for(int m=0; m<3;m++){
-        if(tgtInfo->targetE[m]==-10000 || tof1Info->tof1_E==-1000){
-          if(ttcInfo->ttc_E[n]==-10000 || tof2Info->tof2_E[n]==-1000){
+        if(tgtInfo->targetE[m]<90.0 && tof1Info->tof1_E<90.0){
+          if(ttcInfo->ttc_E[n]<90.0 && tof2Info->tof2_E[n]<=90.0){
 	    goto endLoop;
 	  }
 	}
       }
     }
     for(int j=0; j<768; j++){
-      if(csiInfo->csi_x[j]!=-10000){
+      if(csiInfo->ECsI[j]>=20.0 && csiInfo->ECsI[j]<245){
         labelPi0=csiInfo->lablePi01[j];
         //if(labelPi0!=0) goto endLoop;
-        if(csiInfo->trackID[j]==2 && csiInfo->particle[j]==clustPid1){
 	  fired1=true;
-	  g1E.push_back(csiInfo->ECsI[j]);
-	  index1.push_back(j);
-	}
-        if(csiInfo->trackID[j]==3 && csiInfo->particle[j]==clustPid2){
-	  fired2=true;
-	  g2E.push_back(csiInfo->ECsI[j]);
-	  index2.push_back(j);
-	}
-        if(csiInfo->trackID[j]==4){
-	  fired3=true;
-	  g3E.push_back(csiInfo->ECsI[j]);
-	  index3.push_back(j);
-	}
+	clust->setClusterVar(j,csiInfo->ECsI[j]/1000.);
       }
     } // end of CsI for loop
-    if(fired1 && fired2){
+    if(fired1){
       // particle 1
       // find max element and its corresponding index
-      GeV=1000.0;
+      GeV=1/1000.0;
+      // detected charged particle vertex info.
+      primpx=tgtInfo->tp_x[0]*GeV;
+      primpy=tgtInfo->tp_y[0]*GeV;
+      primpz=tgtInfo->tp_z[0]*GeV;
+      Eprim=.10854562540178539;
+      clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
+      clust->evalClusters();
+      //clust->fillHistos();
+      clust->empty();
+      /*
       Eg1=*max_element(g1E.begin(), g1E.end());
       d1=std::max_element(g1E.begin(), g1E.end())-g1E.begin();
       pos1=index1[d1]; //returns CsI copyID which will be used get physics info.
@@ -134,11 +139,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       g2x=csiInfo->csi_x[pos2]; g2y=csiInfo->csi_y[pos2]; g2z=csiInfo->csi_z[pos2];
       tgt2E=tgtInfo->sE[2];
       tgt2pl=tgtInfo->targL[2];
-      // detected charged particle vertex info.
-      primpx=tgtInfo->tp_x[0];
-      primpy=tgtInfo->tp_y[0];
-      primpz=tgtInfo->tp_z[0];
-      Eprim=.10854562540178539;
       primlen=tgtInfo->targL[0];
       // Set variables in case of 3-cluster events
       if(fired3){ // For now this is a special Kpi2 case for pi0->e+e-gamma
@@ -166,13 +166,11 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       clust->target1Eloss(tgt1E,tgt1pl);
       clust->target2Eloss(tgt2E,tgt2pl);
       // fill 3 & 4-vector variables
-      clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
       clust->setParticle1(g1px, g1py, g1pz, Eg1);
       clust->setParticle2(g2px, g2py, g2pz, Eg2);
       // Fill various histograms
       //clust->targetEloss(tgt1E,tgt1pl,tgt2E,tgt2pl);
       clust->setPi0label(labelPi0);
-      clust->fillHistos();
       if(i % 1000==0){
         std::cout<<" ievt.. "<<i<<std::endl;
 	//std::cout<<" --- pi0 channel label is:      "<<evtInfo->lablePi01<<std::endl;
@@ -180,10 +178,15 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
         std::cout<<" --- gamma1 the max element is: "<<Eg1<<"\t"<<pos1<<"\t"<<csiInfo->csi_pz[pos1]<<"\t"<<csiInfo->particle[pos1]<<std::endl;
         std::cout<<" --- gamma2 the max element is: "<<Eg2<<"\t"<<pos2<<"\t"<<csiInfo->csi_pz[pos2]<<std::endl;
         std::cout<<"-----------------------------------------------------------\n";
-      }
+      }*/
     }
     endLoop:
+    if(i % 1000==0){
+      std::cout<<" ievt.. "<<i<<std::endl;
+      std::cout<<"-----------------------------------------------------------\n";
+    }
     // need to reset fired values to false
     fired1=false; fired2=false;  fired3=false;
   } // end of event loop
+  //clust->plotHistos();
 }

@@ -1,10 +1,12 @@
 #include "trekG4CsImapper.h"
 
 trekG4CsImapper::trekG4CsImapper(){
-  fcluster=new trekG4Cluster();
 }
 trekG4CsImapper::~trekG4CsImapper(){
-  delete fcluster;
+}
+void trekG4CsImapper::init(){
+ // Make sure readMap() function is called whenever program executes
+ readMap(); 
 }
 void trekG4CsImapper::readMap(){
   fname="csiMap.dat";
@@ -28,6 +30,4 @@ void trekG4CsImapper::readMap(){
     std::cerr<<" ****** Error opening file ''"<<fname<<".'' Please make sure you have the file \n";
     std::abort();
   }
-  // pass on the map to the trekG4Cluster class
-  fcluster->setcsiMap(csiMap);
 }

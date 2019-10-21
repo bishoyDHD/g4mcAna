@@ -8,8 +8,8 @@ using namespace std;
 
 int main(int argc,char** argv){
   trekG4Var* pargs=new trekG4Var();
-  trekG4CsImapper map;
-  map.readMap();
+  //trekG4CsImapper map;
+  //map.readMap();
   if(!pargs->parseArgs(argc,argv)){
     pargs->printUsage("e36g4mcAna");
     return 0; //executes the exit procedure
@@ -22,6 +22,8 @@ int main(int argc,char** argv){
   int channel=pargs->getChannel();
   std::cout<<" ...current channel number is: "<<channel<<std::endl;
   trekG4AnalysisManager* trekMC=new trekG4AnalysisManager();
+  // initialize
+  trekMC->init();
   trekMC->beginRoot(name, channel);
   trekMC->analyze(file);
   trekMC->writeRoot();

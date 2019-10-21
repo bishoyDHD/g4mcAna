@@ -1,10 +1,11 @@
 #ifndef TrekMCtree_HH
 #define TrekMCtree_HH 1
 
-#include <map>
 #include <array>
 #include <TObject.h>
 #include <TString.h>
+#include <map>
+#include "G4String.hh"
 
 class TrekMCtree : public TObject {
 public:
@@ -44,7 +45,7 @@ public:
   std::array<Double_t,256> tgt_x, tgt_y, tgt_z;
   std::array<Double_t,256> tgtP;
   std::array<Double_t,256> tgtPx, tgtPy, tgtPz;
-  std::array<Double_t,256> targetdE;
+  std::array<Double_t,256> targetdE; 
   std::array<Double_t,256> targetdt;
   std::array<Double_t,7> targL;
   // target surface variables
@@ -166,7 +167,6 @@ public:
 
 class TrekPgcInfo: public TrekMCtree{
 public:
-  public:
   Double_t pgc_E;
   Double_t time;
   TString particle;

@@ -7,21 +7,27 @@ trekG4findClusters::~trekG4findClusters(){
 // private function so cannot be accessed outside of class
 // since only intended for this class
 // ---> All good!
-std::size_t trekG4findClusters::get_nthIndex(ve, std::size_t k){
-  std::vector<std::size_t> indexes(indexph.size());
+std::size_t trekG4findClusters::get_nthIndex(const std::vector<double> &vect,std::size_t k){
+  std::vector<std::size_t> indexes(vect.size());
   std::iota(indexes.begin(), indexes.end(), 0);
   std::nth_element(indexes.begin(), indexes.begin() + k, indexes.end(),
     [&](int lhs, int rhs){
-      return indexph[lhs] > indexph[rhs];
+      return vect[lhs] > vect[rhs];
     }
   );
   return indexes[k];
 }
-void trekG4findClusters::findClusters(std::map<std::pair<double,double>,double> csiClust,std::vector<double> csiE,std::vector<double> csiTheta,std::vector<double> csiPhi){
+void trekG4findClusters::findClusters(std::map<std::pair<double,double>,double> csiClust,const std::vector<double> &csiE,std::vector<double> csiTheta,std::vector<double> csiPhi,std::map<std::pair<double,double>,bool> check){
+  std::cout<<" size of Ecsi is "<<csiClust.size()<<"\n";
+  csiCheck.insert(check.begin(),check.end());
+  numOfsingleClus=0; numOfClus=0;
+  singleEne.clear();       clusEne.clear();
+  singTheta.clear();       clusThetaE.clear();
+  singPhi.clear();         clusPhiE.clear();
   for(std::size_t mm=0; mm !=csiE.size(); mm++){
-    const auto index=get_nthIndex(csiE, mm);
-    std::cout<<"  the greater index --> "<<index <<std::endl;
-            //<< " with value "<<indexph[index]<<std::endl;
+    const std::size_t index=get_nthIndex(csiE, mm);
+    std::cout<<"  the greater index --> "<<index;// <<std::endl;
+    std::cout<<" with value "<<csiE[index]<<std::endl;
     ntheta=csiTheta[index], nphi=csiPhi[index];
     tppair=std::make_pair(ntheta,nphi);
     std::cout<<"   ==>  theta and phi "<<ntheta<<"  "<<nphi<<std::endl;
@@ -471,47 +477,35 @@ void trekG4findClusters::findClusters(std::map<std::pair<double,double>,double> 
       std::cout<<" >>>  Cluster energy is ------------->: "<<Eclus<<" [GeV]";
     }
     if(clusCrys>=2){
-      numOfClus++;/*
+      numOfClus++;
       // perform energy-weighting and convert from deg-->rad
       rtheta=TMath::DegToRad()*(thetaE/Eclus);
       rphi=TMath::DegToRad()*(phiE/Eclus);
-      z_w=clusZ/Eclus;
-      r_w=clusR/Eclus;
-      // Fill the theta, phi distributions in rad
-      //treeClus->thetaE=rtheta;
-      //treeClus->phiE=rphi;
       clusEne.push_back(Eclus);
-      treeClus->Ncrys=clusCrys;
-      treeClus->ClustCrys=clusCrys;
       clusThetaE.push_back(rtheta);
       clusPhiE.push_back(rphi);
-      clusEz.push_back(z_w);
-      clusEr.push_back(r_w);
-      h2ang->Fill(rtheta,rphi);
-      h2deg->Fill(rtheta*180./M_PI,rphi*180/M_PI);*/
+      //h2ang->Fill(rtheta,rphi);
+      //h2deg->Fill(rtheta*180./M_PI,rphi*180/M_PI);
     }
     if(clusCrys==1){
-      numOfsingleClus++;/*
+      numOfsingleClus++;
       rtheta=TMath::DegToRad()*(thetaE/Eclus);
       rphi=TMath::DegToRad()*(phiE/Eclus);
-      z_w=clusZ/Eclus;
-      r_w=clusR/Eclus;
-      // Fill the theta, phi distributions in rad
-      //treeClus->thetaE=rtheta;
-      //treeClus->phiE=rphi;
       singTheta.push_back(rtheta);
       singPhi.push_back(rphi);
-      singZ.push_back(z_w);
-      singR.push_back(r_w);
-      h2ang->Fill(rtheta,rphi);
-      h2deg->Fill(rtheta*180./M_PI,rphi*180/M_PI);
-      h1sclus->Fill(1);
-      treeClus->Ncrys=1;
-      singleEne.push_back(Eclus);*/
+      singleEne.push_back(Eclus);
+      //h2ang->Fill(rtheta,rphi);
+      //h2deg->Fill(rtheta*180./M_PI,rphi*180/M_PI);
+      //h1sclus->Fill(1);
     }
     csiCheck[tppair]=false; // mute central crystal
-    //cout<<"  Number of crystals is:  "<<clusCrys<<endl;
+    std::cout<<"  Number of crystals is:  "<<clusCrys<<std::endl;
     checkedCrys:
     std::cout<<"\n --------------------------------------------------------------------->\n\n";
   } // end of cluster finding routine
+  csiCheck.clear();
+  std::cout<<"   Checking the cluster size: "<<clusEne.size()<<", "<<singleEne.size()<<std::endl;
+  std::cout<<"\n\n  Number of clusters is   :  "<<numOfClus<<std::endl;
+  std::cout<<"  Number of single clusters is:  "<<numOfsingleClus<<std::endl;
+  std::cout<<" ***************************************************************************\n";
 }

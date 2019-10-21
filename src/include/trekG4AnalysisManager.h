@@ -1,6 +1,7 @@
 #ifndef trekG4AnalysisManager_H
 #define trekG4AnalysisManager_H 1
 #include "trekG4Cluster.h"
+#include "trekG4CsImapper.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -19,11 +20,13 @@ public:
   void analyze(TFile* pfile);
   void beginRoot(std::string name,int channel);
   void writeRoot();
+  void init();
   TFile* outFile;
 private:
   std::string clustPid1, clustPid2, clustPid3, clustPid4, clustPid5, clustPid6;
   std::string dummy="dummy";
   trekG4Cluster* clust;
+  trekG4CsImapper* csiMapper;
   Int_t nentries;
   int d1, d2, d3, pos1, pos2, pos3;
   double GeV;

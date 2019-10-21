@@ -7,11 +7,18 @@
 #include <TList.h>
 #include <TLorentzVector.h>
 #include <TDirectory.h>
+#include "trekG4findClusters.h"
+#include "trekG4CsImapper.h"
+#include "clusterScore.h"
 
 class trekG4Cluster{
 public:
   trekG4Cluster();
   ~trekG4Cluster();
+  void init();
+  // cluster evaluation function
+  void evalClusters();
+  void empty();
   void defHistos(std::string,std::string,std::string,std::string);
   void fillHistos();
   void setPi0label(int lpi0);
@@ -19,6 +26,8 @@ public:
   void primaryPID(std::string p1,std::string p2,std::string p3,std::string p4);
   void primtgtEloss(double px,double py,double pz,double tgtE,double tgtpL);
   void setcsiMap(const std::map<int,std::pair<double,double>> &csiMap);
+  void setcsiMap();
+  inline std::map<int,std::pair<double,double>> getcsiMap(){return csiMap;};
   void setPrimVect3(double x,double y,double z);
   void target1Eloss(double tgtE,double tgtpL);
   void target2Eloss(double tgtE,double tgtpL);
@@ -33,17 +42,21 @@ public:
   void plotHistos();
   void setClusterVar(int j,double Enecsi);
 private:
+  int multiCrys, singleCrys;
+  trekG4findClusters* fclusters;
   std::string tgtn1, tgtn2, tgtn3, tgtcorr;
   std::string primPid1, primPid2, primPid3, primPid4;
   std::string clustPid1, clustPid2, clustPid3, clustPid4, clustPid5, clustPid6;
   int labelPi0;
   double primx,primy,primz;
+  double E2clust;
   double primtgt1px,primtgt1py,primtgt1pz;
   double prm1px,prm1py,prm1pz,prm1E;
-  double par1px,par1py,par1pz,par1E;
-  double par2px,par2py,par2pz,par2E;
-  double par3px,par3py,par3pz,par3E;
-  double par4px,par4py,par4pz,par4E;
+  double pr2px,pr2py,pr2pz,pr2E;
+  double par1px,par1py,par1pz,par1E,par1theta,par1phi;
+  double par2px,par2py,par2pz,par2E,par2theta,par2phi;
+  double par3px,par3py,par3pz,par3E,par3theta,par3phi;
+  double par4px,par4py,par4pz,par4E,par4theta,par4phi;
   double primtgtE1, primtgtPl1;
   double targE1, targPl1;
   double targE2, targPl2;
@@ -52,15 +65,18 @@ private:
   // cluster map
   std::map<int,std::pair<double,double>> csiMap;
   std::map<std::pair<double,double>,double> csiClust;
+  std::map<std::pair<double,double>,bool> csiCheck;
   int csiID;
-  double Ecsi,theta,phi;
+  std::vector<double> Ecsi,theta,phi;
+  std::vector<double> clusEne,clusThetaE,clusPhiE;
+  std::vector<double> singleEne,singTheta,singPhi;
   double opAng1, opAng2; // opAng1 is for pi+pi0
   TH1D* h1ang1,*h1ang2,*h1ang3,*h1Etot,*h1inv;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
   TH1D* h1Eloss[4];
   TH2D* h2Eloss[4];
   // LorentzVector definitions
-  TLorentzVector par1lv, par2lv, par3lv, par4lv, pi0lv, piPlv;
+  TLorentzVector par1lv,par2lv,par3lv,par4lv,pi0lv,piPlv,prim2lv;
   TLorentzVector par1lvCorr, par2lvCorr, par3lvCorr;
   TLorentzVector par4lvCorr, pi0lvCorr, piPlvCorr;
   // TVector3 definitions
@@ -68,5 +84,8 @@ private:
   TVector3 par1v3Corr, par2v3Corr, par3v3Corr;
   TVector3 par4v3Corr, pi0v3Corr, piPv3Corr;
   bool moreChan;
+  // pointer to CsI mapper
+  trekG4CsImapper* fcsimap;
+  clusterScore* fscore;
 };
 #endif

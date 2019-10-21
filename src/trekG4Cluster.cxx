@@ -7,6 +7,14 @@
 #include <TStyle.h>
 
 trekG4Cluster::trekG4Cluster(){
+  fclusters=new trekG4findClusters();
+  fcsimap=new trekG4CsImapper();
+  fscore=new clusterScore();
+  multiCrys=0;  singleCrys=0;
+}
+trekG4Cluster::~trekG4Cluster(){
+}
+void trekG4Cluster::init(){
   h1ang1=NULL;    h1ang2=NULL;    h1ang3=NULL;
   h1Etot=NULL;    h1inv=NULL;     //h1Eloss=NULL;
   //h2Eloss=NULL;
@@ -25,8 +33,11 @@ trekG4Cluster::trekG4Cluster(){
   tgtcorr="Target E_{loss} correction";
   tgtn3="Target E_{loss} vs. target Path length";
   labelPi0=-999; // initial dummy var for pi0 channels
-}
-trekG4Cluster::~trekG4Cluster(){
+  // make sure map is initialized with every call to 
+  // clustering class
+  fcsimap->init();
+  setcsiMap();
+  fscore->init();
 }
 // define given primary particles for given channel
 void trekG4Cluster::primaryPID(std::string p1,std::string p2,std::string p3,std::string p4){
@@ -45,8 +56,8 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
   gStyle->SetOptStat(0);
   h1ang1=new TH1D("h1ang1",n1.c_str(),55,-1.1,1.1);
   h1ang2=new TH1D("h1ang2",n2.c_str(),55,-1.1,1.1);
-  h1Etot=new TH1D("h1Etot",n3.c_str(),75,0.0,0.30);
-  h1inv=new TH1D("h1inv",n4.c_str(),75,0.0,0.30);
+  h1Etot=new TH1D("h1Etot",n3.c_str(),35,0.0,0.30);
+  h1inv=new TH1D("h1inv",n4.c_str(),35,0.0,0.30);
   h1Ecorr=new TH1D("ecorr",tgtcorr.c_str(),75,-.01,0.30);
   h1invCorr=new TH1D("invCorr","Invariant mass of A' (E_{loss} applied)",75,0.0,0.30);
   // Target energy-loss correction histograms
@@ -62,26 +73,156 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
     h2Eloss[i]=new TH2D(h2E.str().c_str(),tgtn3.c_str(),50,0.0,100.,25,0.0,0.05);
   }
 }
-void trekG4Cluster::setcsiMap(const std::map<int,std::pair<double,double>> &csimap){
+void trekG4Cluster::setcsiMap(){
   // insert into csiMap the element of csimap
-  csiMap.insert(csimap.begin(),csimap.end());
-  //std::cout<<" checking the mapping here "<<csiMap[767].first<<" "<<csiMap[767].second<<"\n";
+  csiMap=fcsimap->getcsiMap(); //.insert(fcsimap->getcsiMap().begin(),fcsimap->getcsiMap().end());
+  //std::cout<<" checking the mapping here "<<csiMap[225].first<<" "<<csiMap[225].second<<"\n";
 }
 void trekG4Cluster::setClusterVar(int j,double EneCsI){
-  Ecsi=EneCsI; // set CsI energy
+  Ecsi.push_back(EneCsI); // set CsI energy
   csiID=j;
-  csiClust[csiMap[csiID]]=Ecsi;
+  //std::cout<<" checking the csiID "<<csiID<<"\n";
+  //std::cout<<" angles by index "<<csiID<<": "<<csiMap[225].first<<" "<<csiMap[225].second<<"\n";
+  csiClust[csiMap[csiID]]=EneCsI;
+  csiCheck[csiMap[csiID]]=true;
   // set respective angles
-  theta=csiMap[csiID].first;
-  phi=csiMap[csiID].second;
+  theta.push_back(csiMap[csiID].first);
+  phi.push_back(csiMap[csiID].second);
+  std::cout<<" angles theta, phi: ("<<csiMap[csiID].first<<", "<<csiMap[csiID].second<<") \n";
+  //fclusters->findClusters(csiClust,Ecsi,theta,phi);
+}
+void trekG4Cluster::evalClusters(){
+  std::cout<<" size of map is: "<<csiClust.size()<<"\n";
+  fclusters->findClusters(csiClust,Ecsi,theta,phi,csiCheck);
+  multiCrys=fclusters->getMultiCrysClust();
+  singleCrys=fclusters->getSingleCrysClust();
+  // obtain Multi-cluster E, theta & phi
+  clusEne=fclusters->getMultiE();
+  clusThetaE=fclusters->getMultiTheta();
+  clusPhiE=fclusters->getMultiPhi();
+  // obtain single cluster E, theta & phi
+  singleEne=fclusters->getSingleE();
+  singTheta=fclusters->getSingleTheta();
+  singPhi=fclusters->getSinglePhi();
+  std::cout<<" ........ singleCrys "<<singleCrys<<std::endl;
+  std::cout<<" ........ Multi-Crys "<<multiCrys<<std::endl;
+  if(multiCrys==2 && singleCrys==0){
+    std::cout<<"  This is only 2 multiCrys ---|\n";
+    fscore->init();
+    fscore->clusterEval(clusEne,clusThetaE,clusPhiE);
+    pr2px=fscore->getprPx();   pr2py=fscore->getprPy();  pr2pz=fscore->getprPz();
+    E2clust=fscore->getE();
+    // cluster PID 1:
+    fscore->setCpid(1); //NOTE: must always set this
+    par1px=fscore->getclPx();
+    par1py=fscore->getclPy();
+    par1pz=fscore->getclPz();
+    par1E=fscore->getclE();
+    par1theta=fscore->getclTheta();
+    par1phi=fscore->getclPhi();
+    std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
+    // cluster PID 1:
+    fscore->setCpid(2);
+    par2px=fscore->getclPx();
+    par2py=fscore->getclPy();
+    par2pz=fscore->getclPz();
+    par2E=fscore->getclE();
+    par2theta=fscore->getclTheta();
+    par2phi=fscore->getclPhi();
+    std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
+    opAng2=fscore->getOpAngleClust();
+    prim2lv=fscore->getprimLV();
+  }else
+  if(multiCrys==0 && singleCrys==2){
+    std::cout<<"  This is only 2 singleCrys ---|\n";
+    fscore->init();
+    fscore->clusterEval(singleEne,singTheta,singPhi);
+    pr2px=fscore->getprPx();   pr2py=fscore->getprPy();  pr2pz=fscore->getprPz();
+    E2clust=fscore->getE();
+    // cluster PID 1:
+    fscore->setCpid(1); //NOTE: must always set this
+    par1px=fscore->getclPx();
+    par1py=fscore->getclPy();
+    par1pz=fscore->getclPz();
+    par1E=fscore->getclE();
+    par1theta=fscore->getclTheta();
+    par1phi=fscore->getclPhi();
+    std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
+    // cluster PID 1:
+    fscore->setCpid(2);
+    par2px=fscore->getclPx();
+    par2py=fscore->getclPy();
+    par2pz=fscore->getclPz();
+    par2E=fscore->getclE();
+    par2theta=fscore->getclTheta();
+    par2phi=fscore->getclPhi();
+    std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
+    opAng2=fscore->getOpAngleClust();
+    prim2lv=fscore->getprimLV();
+  }else
+  if(multiCrys<=4 && singleCrys<=4){
+    if(((multiCrys==1 && singleCrys==0)||(multiCrys==0 && singleCrys==1))){
+      fscore->init(); 
+      goto exitFill;
+    }else
+    if(multiCrys==3 && singleCrys==0){
+      fscore->init();
+      std::cout<<"  This is only 3 multi-Crys ---|\n";
+      fscore->clusterEval(clusEne,clusThetaE,clusPhiE);
+    }else
+    if(multiCrys==0 && singleCrys==3){
+      fscore->init();
+      std::cout<<"  This is only 3 singleCrys ---|\n";
+      fscore->clusterEval(singleEne,singTheta,singPhi);
+    }else{
+      fscore->init();
+      std::cout<<"  This is only combined ---|\n";
+      fscore->clusterEval(clusEne,singleEne,clusThetaE,clusPhiE,singTheta,singPhi);
+    }
+    pr2px=fscore->getprPx();   pr2py=fscore->getprPy();  pr2pz=fscore->getprPz();
+    E2clust=fscore->getE();
+    // cluster PID 1:
+    fscore->setCpid(1); //NOTE: must always set this
+    par1px=fscore->getclPx();
+    par1py=fscore->getclPy();
+    par1pz=fscore->getclPz();
+    par1E=fscore->getclE();
+    par1theta=fscore->getclTheta();
+    par1phi=fscore->getclPhi();
+    std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
+    // cluster PID 1:
+    fscore->setCpid(2);
+    par2px=fscore->getclPx();
+    par2py=fscore->getclPy();
+    par2pz=fscore->getclPz();
+    par2E=fscore->getclE();
+    par2theta=fscore->getclTheta();
+    par2phi=fscore->getclPhi();
+    std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
+    opAng2=fscore->getOpAngleClust();
+    prim2lv=fscore->getprimLV();
+  }
+  if(prim2lv.E()<.250) fillHistos();
+  exitFill:
+  std::cout<<"... End reached! Outta here! \n";
+  //std::cout<<" ... number of multi-crys cluster: "<<fclusters->getMultiCrysClust()<<"\n";
+  //std::cout<<" ... number of singleCrys cluster: "<<fclusters->getSingleCrysClust()<<"\n";
+}
+void trekG4Cluster::empty(){
+  // empty the map at the end 
+  csiClust.clear();
+  Ecsi.clear();         theta.clear();         phi.clear();         csiCheck.clear();
+  clusEne.clear();      clusThetaE.clear();    clusPhiE.clear();
+  singleEne.clear();    singTheta.clear();     singPhi.clear();
 }
 // Set values for different partilces and 
 // construct corresponding Lorentz vectors
 // --------------->  SET TARGET VARIABLES <----------------
 void trekG4Cluster::primtgtEloss(double px,double py,double pz,double tgtE, double tgtpL){
   // primary particle 1
-  primtgtE1=tgtE/1000.;   primtgtPl1=tgtpL;
+  primtgtE1=tgtE;   primtgtPl1=tgtpL;
   primtgt1px=px, primtgt1py=py, primtgt1pz=pz;
+  std::cout<<" primary px,py,pz: "<<primtgt1px<<", "<<primtgt1pz<<", "<<primtgt1pz<<"\n";
 }
 void trekG4Cluster::target1Eloss(double tgtE, double tgtpL){
   // particle 1
@@ -114,27 +255,28 @@ void trekG4Cluster::setPi0label(int lpi0){
 // --------------->  SET CsI(Tl) VARIABLES <----------------
 void trekG4Cluster::setPrimpartl(double px,double py,double pz,double energy){
   // primary particle 1 -- depends on channel
-  prm1px=px/1000.;  prm1py=py/1000.;  prm1pz=pz/1000.; prm1E=energy/1000.;
+  prm1px=px;  prm1py=py;  prm1pz=pz; prm1E=energy;
 } 
 void trekG4Cluster::setPrimVect3(double x,double y,double z){
   primx=x; primy=y; primz=z;
 }
+/*
 void trekG4Cluster::setParticle1(double px,double py,double pz,double energy){
   // particle 1 -- depends on channel
-  par1px=px/1000.;  par1py=py/1000.;  par1pz=pz/1000.; par1E=energy/1000.;
+  par1px=px;  par1py=py;  par1pz=pz; par1E=energy;
 } 
 void trekG4Cluster::setParticle2(double px,double py,double pz,double energy){
   // particle 2 -- depends on channel
-  par2px=px/1000.;  par2py=py/1000.;  par2pz=pz/1000.; par2E=energy/1000.;
+  par2px=px;  par2py=py;  par2pz=pz; par2E=energy;
 } 
 void trekG4Cluster::setParticle3(double px,double py,double pz,double energy){
   // particle 3 -- depends on channel
-  par3px=px/1000.;  par3py=py/1000.;  par3pz=pz/1000.; par3E=energy/1000.;
+  par3px=px;  par3py=py;  par3pz=pz; par3E=energy;
 } 
 void trekG4Cluster::setParticle4(double px,double py,double pz,double energy){
   // particle 4 -- depends on channel
-  par4px=px/1000.;  par4py=py/1000.;  par4pz=pz/1000.; par4E=energy/1000.;
-} 
+  par4px=px;  par4py=py;  par4pz=pz; par4E=energy;
+}*/ 
 // --------------->  FILL HISTOGRAMS <----------------
 void trekG4Cluster::fillHistos(){
   // Set Loretz vector variables
@@ -142,13 +284,13 @@ void trekG4Cluster::fillHistos(){
   par2lv.SetPxPyPzE(par2px,par2py,par2pz,par2E);
   piPlv.SetPxPyPzE(primtgt1px,primtgt1py,primtgt1pz,prm1E);
   //std::cout<<" --- checking the pi0 channel: "<<labelPi0<<std::endl;
-  pi0lv=par1lv+par2lv;
+  //pi0lv=par1lv+par2lv;
   // ------ Energy loss correction application -------///
-  par1lvCorr.SetPxPyPzE(par1px,par1py,par1pz,par1E+targE1);
-  par2lvCorr.SetPxPyPzE(par2px,par2py,par2pz,par2E+targE2);
-  pi0lvCorr=par1lvCorr+par2lvCorr;
-  h1invCorr->Fill(pi0lvCorr.M());
-  h1Ecorr->Fill(pi0lvCorr.E());
+  //par1lvCorr.SetPxPyPzE(par1px,par1py,par1pz,par1E+targE1);
+  //par2lvCorr.SetPxPyPzE(par2px,par2py,par2pz,par2E+targE2);
+  //pi0lvCorr=par1lvCorr+par2lvCorr;
+  //h1invCorr->Fill(pi0lvCorr.M());
+  //h1Ecorr->Fill(pi0lvCorr.E());
   //pi0lv=par1lv+par3lv+par4lv;
   //par3lv.SetPxPyPzE(par3px,par3py,par3pz,par3E);
   //par4lv.SetPxPyPzE(par4px,par4py,par4pz,par4E);
@@ -159,12 +301,12 @@ void trekG4Cluster::fillHistos(){
   par2v3.SetXYZ(par2px,par2py,par2pz);
   piPv3.SetXYZ(primtgt1px,primtgt1py,primtgt1pz);
   //piPv3.SetXYZ(primx,primy,primz);
-  pi0v3.SetXYZ(pi0lv.Px(),pi0lv.Py(),pi0lv.Pz());
+  pi0v3.SetXYZ(prim2lv.Px(),prim2lv.Py(),prim2lv.Pz());
   // fill histograms accordingly
-  h1inv->Fill(pi0lv.M());
-  h1Etot->Fill(pi0lv.E());
+  h1inv->Fill(prim2lv.M());
+  h1Etot->Fill(prim2lv.E());
   opAng1=std::cos(piPv3.Angle(pi0v3));
-  opAng2=std::cos(par1v3.Angle(par2v3));
+  //opAng2=std::cos(par1v3.Angle(par2v3));
   h1ang2->Fill(opAng2);
   h1ang1->Fill(opAng1);
 }
@@ -201,7 +343,7 @@ void trekG4Cluster::plotHistos(){
   h1ang1->GetYaxis()->SetTitle("counts/bin");
   h1ang1->Draw("hist");
   c1->Write();
-
+/*
   c2->cd();
   h1Eloss[0]->GetXaxis()->SetTitle("Energy [GeV]");
   h1Eloss[0]->GetYaxis()->SetTitle("counts/bin");
@@ -238,5 +380,5 @@ void trekG4Cluster::plotHistos(){
   h1invCorr->GetXaxis()->SetTitle(M.str().c_str());
   h1invCorr->GetYaxis()->SetTitle("counts/bin");
   h1invCorr->Draw("hist");
-  c5->Write();
+  c5->Write();*/
 }
