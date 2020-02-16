@@ -56,6 +56,8 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       clust->primaryPID("#mu^{+}","A'",dummy,dummy);
       break;
   }// end of swith statement
+  // set scoring mass here:
+  clust->setScoreMass(mass);
 }
 
 void trekG4AnalysisManager::writeRoot(){
@@ -100,11 +102,11 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       }
     }
     for(int j=0; j<768; j++){
-      if(csiInfo->ECsI[j]>=20.0 && csiInfo->ECsI[j]<245){
+      if(csiInfo->csiID[j]>=0 /* && csiInfo->ECsI[j]<245*/){
         labelPi0=csiInfo->lablePi01[j];
         //if(labelPi0!=0) goto endLoop;
 	  fired1=true;
-	clust->setClusterVar(j,csiInfo->ECsI[j]/1000.);
+	clust->setClusterVar(j,csiInfo->addEcsi[j]/1000.);
       }
     } // end of CsI for loop
     if(fired1){
@@ -115,9 +117,23 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       primpx=tgtInfo->tp_x[0]*GeV;
       primpy=tgtInfo->tp_y[0]*GeV;
       primpz=tgtInfo->tp_z[0]*GeV;
+      // 1st secondary particle vertex info.
+      sec1px=tgtInfo->tp_x[1]*GeV;
+      sec1py=tgtInfo->tp_y[1]*GeV;
+      sec1pz=tgtInfo->tp_z[1]*GeV;
+      sec1E=std::sqrt(sec1px*sec1px+sec1py*sec1py+sec1pz*sec1pz);
+      // 2nd secondary particle vertex info.
+      sec2px=tgtInfo->tp_x[2]*GeV;
+      sec2py=tgtInfo->tp_y[2]*GeV;
+      sec2pz=tgtInfo->tp_z[2]*GeV;
+      sec2E=std::sqrt(sec2px*sec2px+sec2py*sec2py+sec2pz*sec2pz);
+      Eprim=.10854562540178539;
       Eprim=.10854562540178539;
       clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
       clust->evalClusters();
+      // Lorentz Vector and invariant mass eval for tgt secondaries
+      clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
+      clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
       //clust->fillHistos();
       clust->empty();
       /*

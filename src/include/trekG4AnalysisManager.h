@@ -21,6 +21,7 @@ public:
   void beginRoot(std::string name,int channel);
   void writeRoot();
   void init();
+  inline void setInvMass(double invMass){mass=invMass;};
   TFile* outFile;
 private:
   std::string clustPid1, clustPid2, clustPid3, clustPid4, clustPid5, clustPid6;
@@ -30,10 +31,14 @@ private:
   Int_t nentries;
   int d1, d2, d3, pos1, pos2, pos3;
   double GeV;
+  double mass; // mass for the particle of interest (scoring)
   double g1px, g1py, g1pz, Eg1;
   double g2px, g2py, g2pz, Eg2;
   double g3px, g3py, g3pz, Eg3;
   double primpx, primpy, primpz, Eprim,primlen;
+  double sec1px,sec1py,sec1pz,sec1E;
+  double sec2px,sec2py,sec2pz,sec2E;
+  double sec3px,sec3py,sec3pz,sec3E;
   double tgt1E, tgt1pl, tgt2E, tgt2pl, tgt3E, tgt3pl;
   const double tgtE=.018; //average E-loss
   std::vector<double> g1E, g2E, g3E, piE;

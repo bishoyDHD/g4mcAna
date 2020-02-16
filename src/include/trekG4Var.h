@@ -16,9 +16,11 @@ public:
   std::string getName(){return nameRoot;};
   int getMaxN(){return nmax;};
   int getChannel(){return channel;};
+  double getMass(){return mass;};
 private:
   std::string fileName;
   std::string nameRoot;
   int nmax, channel;
+  double mass;
 };
 #endif

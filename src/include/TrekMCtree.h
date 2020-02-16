@@ -1,10 +1,10 @@
 #ifndef TrekMCtree_HH
 #define TrekMCtree_HH 1
 
-#include <map>
 #include <array>
 #include <TObject.h>
 #include <TString.h>
+#include <map>
 
 class TrekMCtree : public TObject {
 public:
@@ -44,13 +44,14 @@ public:
   std::array<Double_t,256> tgt_x, tgt_y, tgt_z;
   std::array<Double_t,256> tgtP;
   std::array<Double_t,256> tgtPx, tgtPy, tgtPz;
-  std::array<Double_t,256> targetdE;
+  std::array<Double_t,256> targetdE; 
   std::array<Double_t,256> targetdt;
   std::array<Double_t,7> targL;
   // target surface variables
   Double_t sx, sy, sz, sE[7];
   std::map<Int_t,TString> particleDef;
   Double_t snx, sny, snz, totP;
+  int dummy;
   
   TrekTargetInfo();
   ~TrekTargetInfo();
@@ -59,6 +60,7 @@ public:
 
 class TrekSftInfo: public TrekMCtree{
 public:
+  Int_t SFTid[2];
   Double_t SFTwposx[2];
   Double_t SFTwposy[2];
   Double_t SFTwposz[2];
@@ -68,6 +70,7 @@ public:
   Double_t SFTnx[2];
   Double_t SFTny[2];
   Double_t SFTnz[2];
+  int dummy;
 
   TrekSftInfo();
   ~TrekSftInfo();
@@ -117,6 +120,7 @@ public:
   Double_t c2wpos_x[12];
   Double_t c2wpos_y[12];
   Double_t c2wpos_z[12];
+  int dummy;
 
   Double_t c3dir_x;  
   Double_t c3dir_y;  
@@ -124,6 +128,7 @@ public:
   Double_t c3wpos_x; 
   Double_t c3wpos_y; 
   Double_t c3wpos_z; 
+  Double_t c3edep; 
 
   Double_t c4dir_x;
   Double_t c4dir_y;
@@ -131,6 +136,7 @@ public:
   Double_t c4wpos_x;
   Double_t c4wpos_y;
   Double_t c4wpos_z;
+  Double_t c4edep; 
   Double_t plen;
   TrekMwpcInfo();
   ~TrekMwpcInfo();
@@ -158,6 +164,7 @@ public:
   std::array<Double_t,12> px;
   std::array<Double_t,12> py;
   std::array<Double_t,12> pz;
+  int dummy;
 
   TrekTof2Info();
   ~TrekTof2Info();
@@ -166,7 +173,6 @@ public:
 
 class TrekPgcInfo: public TrekMCtree{
 public:
-  public:
   Double_t pgc_E;
   Double_t time;
   TString particle;
@@ -186,6 +192,7 @@ public:
   std::array<Double_t,12> ttc_x,  ttc_y,  ttc_z;
   std::array<Double_t,12> ttc_nx, ttc_ny, ttc_nz;
   std::array<Double_t,12> ttc_px, ttc_py, ttc_pz;
+  int dummy;
   TrekTtcInfo();
   ~TrekTtcInfo();
   ClassDef(TrekTtcInfo,2);
@@ -201,6 +208,7 @@ public:
   std::array<Double_t,768> csi_px, csi_py, csi_pz;
   std::array<Double_t,768> csi_plen, csi_phi, csi_theta;
   std::array<Double_t,768> t_CsI;
+  int dummy;
 
   TrekCsiInfo();
   ~TrekCsiInfo();

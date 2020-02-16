@@ -102,6 +102,7 @@ protected:
   TVector3 particle3v;
 private:
   int clustEvalNo;
+  std::vector<bool> v; // start with default size
   int cpid; // determines which value std::map returns
   const int dummy=-1000;
   double particleM;

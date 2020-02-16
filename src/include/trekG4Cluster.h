@@ -15,6 +15,7 @@ class trekG4Cluster{
 public:
   trekG4Cluster();
   ~trekG4Cluster();
+  clusterScore* getClusterScore() const;
   void init();
   // cluster evaluation function
   void evalClusters();
@@ -38,11 +39,14 @@ public:
   void setParticle2(double px,double py,double pz,double energy);
   void setParticle3(double px,double py,double pz,double energy);
   void setParticle4(double px,double py,double pz,double energy);
+  void set2ndryParticle(double px,double py,double pz,double energy,int n);
   void calcMolierRad(double px,double py,double pz,double energy);
+  void setScoreMass(double sMass); // set mass for scoring
   void plotHistos();
   void setClusterVar(int j,double Enecsi);
 private:
   int multiCrys, singleCrys;
+  double mass;
   trekG4findClusters* fclusters;
   std::string tgtn1, tgtn2, tgtn3, tgtcorr;
   std::string primPid1, primPid2, primPid3, primPid4;
@@ -52,6 +56,8 @@ private:
   double E2clust;
   double primtgt1px,primtgt1py,primtgt1pz;
   double prm1px,prm1py,prm1pz,prm1E;
+  double prm2px,prm2py,prm2pz,prm2E;
+  double prm3px,prm3py,prm3pz,prm3E;
   double pr2px,pr2py,pr2pz,pr2E;
   double par1px,par1py,par1pz,par1E,par1theta,par1phi;
   double par2px,par2py,par2pz,par2E,par2theta,par2phi;
@@ -72,6 +78,7 @@ private:
   std::vector<double> singleEne,singTheta,singPhi;
   double opAng1, opAng2; // opAng1 is for pi+pi0
   TH1D* h1ang1,*h1ang2,*h1ang3,*h1Etot,*h1inv;
+  TH1D* h1inv2;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
   TH1D* h1Eloss[4];
   TH2D* h2Eloss[4];

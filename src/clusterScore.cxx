@@ -2,7 +2,7 @@
 
 //clusterVar::clusterVar(){}
 
-clusterScore::clusterScore():mass(0.1349766),cpid(1),clustEvalNo(2){
+clusterScore::clusterScore():cpid(1),clustEvalNo(2){
  
 }
 clusterScore::~clusterScore(){
