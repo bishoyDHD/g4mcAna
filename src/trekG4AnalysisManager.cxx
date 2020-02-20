@@ -88,10 +88,22 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     g1E.clear();   index1.clear();
     g2E.clear();   index2.clear();
     g3E.clear();   index3.clear();
-      clust->empty();
+    clust->empty();
     // make sure this is a good gap event: 
     // Check experimental trigger condition. 
+    double k=225.;
+    const int size=12;
+    greaterThan<double,size> gtof2(tof2Info->tof2_E, size, k);
+    greaterThan<double,size> gttc(ttcInfo->ttc_E, size, k);
+    //std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
     // Skip if not triggered
+    if(tgtInfo->dummy<0 || ttcInfo->dummy<0 || tof2Info->dummy<0 || tof1Info->tof1_E<0){
+      goto endLoop;
+    }
+    // make sure good track in the gap
+    if(gtof2.countGreater()==0 || gttc.countGreater()==0 || tof1Info->tof1_E<k) goto endLoop;
+    //gT.countGreater();
+    /*
     for(int n=0; n<12;n++){
       for(int m=0; m<3;m++){
         if(tgtInfo->targetE[m]<90.0 && tof1Info->tof1_E<90.0){
@@ -100,7 +112,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
 	  }
 	}
       }
-    }
+    }*/
     for(int j=0; j<768; j++){
       if(csiInfo->csiID[j]>=0 /* && csiInfo->ECsI[j]<245*/){
         labelPi0=csiInfo->lablePi01[j];

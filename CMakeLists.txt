@@ -39,3 +39,16 @@ add_executable(e36g4mcAna e36G4Ana.cxx dictDir ${sources} ${headers})
 
 #link executable to the e36g4mcAna
 target_link_libraries(e36g4mcAna "-L${ROOT_LIBRARY_DIR}" ${ROOT_LIBRARIES})
+
+# copy *.dat files into build dir
+set(datFiles
+  csiMap.dat
+  )
+foreach(_script ${datFiles})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/${_script}
+    ${PROJECT_BINARY_DIR}/${_script}
+    COPYONLY
+    )
+endforeach()
+

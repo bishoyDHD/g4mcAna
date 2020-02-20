@@ -2,6 +2,7 @@
 #define trekG4AnalysisManager_H 1
 #include "trekG4Cluster.h"
 #include "trekG4CsImapper.h"
+#include "greaterThan.h"
 #include <iostream>
 #include <string>
 #include <vector>
