@@ -42,7 +42,6 @@ public:
   std::array<Double_t,7> targetE;
   std::array<Double_t,7> genEne;
   std::array<Double_t,256> tgt_x, tgt_y, tgt_z;
-  std::array<Double_t,256> tgtP;
   std::array<Double_t,256> tgtPx, tgtPy, tgtPz;
   std::array<Double_t,256> targetdE; 
   std::array<Double_t,256> targetdt;
@@ -105,21 +104,22 @@ public:
 
 class TrekMwpcInfo: public TrekMCtree{
 public:
-  Int_t gapNo[12];
-  Double_t c2_x[12], c2_y[12], c2_z[12];
+  std::array<Int_t,12> gapNo;
+  std::array<Double_t,12> c2_x, c2_y, c2_z;
   Double_t c3_x, c3_y, c3_z;
   Double_t c4_x, c4_y, c4_z;
 
-  Double_t c2p_x[12], c2p_y[12], c2p_z[12];
+  std::array<Double_t,12> c2p_x, c2p_y, c2p_z;
   Double_t c3p_x, c3p_y, c3p_z;
   Double_t c4p_x, c4p_y, c4p_z;
 
-  Double_t c2dir_x[12]; 
-  Double_t c2dir_y[12]; 
-  Double_t c2dir_z[12]; 
-  Double_t c2wpos_x[12];
-  Double_t c2wpos_y[12];
-  Double_t c2wpos_z[12];
+  std::array<Double_t,12> c2dir_x; 
+  std::array<Double_t,12> c2dir_y; 
+  std::array<Double_t,12> c2dir_z; 
+  std::array<Double_t,12> c2wpos_x;
+  std::array<Double_t,12> c2wpos_y;
+  std::array<Double_t,12> c2wpos_z;
+  std::array<Double_t,12> c2_p;
   int dummy;
 
   Double_t c3dir_x;  
@@ -192,6 +192,7 @@ public:
   std::array<Double_t,12> ttc_x,  ttc_y,  ttc_z;
   std::array<Double_t,12> ttc_nx, ttc_ny, ttc_nz;
   std::array<Double_t,12> ttc_px, ttc_py, ttc_pz;
+  std::array<Double_t,12> ttc_p;
   int dummy;
   TrekTtcInfo();
   ~TrekTtcInfo();
