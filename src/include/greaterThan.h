@@ -7,18 +7,18 @@
 
 // Template CLASS to return the count of elements 
 // from the array which are greater than k 
-template <typename T,std::size_t N>
+template <typename T>
 class greaterThan{
 private:
   int l,r;
   int leftGreater;
   int size;
 public:
-  greaterThan(std::array<T,N> arr,int n,T k);
+  greaterThan(std::vector<T> vec,int n,T k);
   T countGreater();
 };
-template<typename T,std::size_t N>
-greaterThan<T,N>::greaterThan(std::array<T,N> arr,int n,T k) { 
+template<typename T>
+greaterThan<T>::greaterThan(std::vector<T> vec,int n,T k) { 
   size=n;
   l = 0; 
   r = n - 1; 
@@ -33,7 +33,7 @@ greaterThan<T,N>::greaterThan(std::array<T,N> arr,int n,T k) {
     
     // If mid element is greater than 
     // k update leftGreater and r 
-    if (arr[m] > k) { 
+    if (vec[m] > k) { 
       leftGreater = m; 
       r = m - 1; 
     } 
@@ -47,8 +47,8 @@ greaterThan<T,N>::greaterThan(std::array<T,N> arr,int n,T k) {
   // Return the count of elements greater than k 
   countGreater();
 } 
-template<typename T,std::size_t N>
-T greaterThan<T,N>::countGreater(){
+template<typename T>
+T greaterThan<T>::countGreater(){
   return (size - leftGreater); 
 }
 #endif

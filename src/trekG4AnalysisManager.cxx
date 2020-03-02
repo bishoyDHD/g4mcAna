@@ -91,11 +91,13 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     clust->empty();
     // make sure this is a good gap event: 
     // Check experimental trigger condition. 
-    double k=150.;
-    const int size=12;
-    greaterThan<double,size> gtof2(tof2Info->tof2_P, size, k);
-    greaterThan<double,size> gttc(ttcInfo->ttc_p, size, k);
-    greaterThan<double,size> gc2(mwpcInfo->c2_p, size, k);
+    double k=149.;
+    size=tof2Info->tof2_P.size();
+    greaterThan<double> gtof2(tof2Info->tof2_P, size, k);
+    size=ttcInfo->ttc_p.size();
+    greaterThan<double> gttc(ttcInfo->ttc_p, size, k);
+    size=mwpcInfo->c2_p.size();
+    greaterThan<double> gc2(mwpcInfo->c2_p, size, k);
     // Skip if not triggered
     if(tgtInfo->dummy<0 || ttcInfo->dummy<0 || tof2Info->dummy<0 || tof1Info->tof1_E<0){
       goto endLoop;
@@ -116,12 +118,13 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
 	}
       }
     }*/
-    for(int j=0; j<768; j++){
+    for(UInt_t j=0; j<csiInfo->csiID.size(); j++){
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>1){
         labelPi0=csiInfo->lablePi01[j];
+	csiID=csiInfo->csiID[j];
         //if(labelPi0!=0) goto endLoop;
 	  fired1=true;
-	clust->setClusterVar(j,csiInfo->addEcsi[j]/1000.);
+	clust->setClusterVar(csiID,csiInfo->addEcsi[j]/1000.);
       }
     } // end of CsI for loop
     if(fired1){

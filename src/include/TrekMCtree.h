@@ -41,10 +41,10 @@ public:
   Double_t tgt_dirx, tgt_diry, tgt_dirz;
   std::array<Double_t,7> targetE;
   std::array<Double_t,7> genEne;
-  std::array<Double_t,256> tgt_x, tgt_y, tgt_z;
-  std::array<Double_t,256> tgtPx, tgtPy, tgtPz;
-  std::array<Double_t,256> targetdE; 
-  std::array<Double_t,256> targetdt;
+  std::vector<Double_t> tgt_x, tgt_y, tgt_z;
+  std::vector<Double_t> tgtPx, tgtPy, tgtPz;
+  std::vector<Double_t> targetdE; 
+  std::vector<Double_t> targetdt;
   std::array<Double_t,7> targL;
   // target surface variables
   Double_t sx, sy, sz, sE[7];
@@ -104,22 +104,22 @@ public:
 
 class TrekMwpcInfo: public TrekMCtree{
 public:
-  std::array<Int_t,12> gapNo;
-  std::array<Double_t,12> c2_x, c2_y, c2_z;
+  std::vector<Int_t> gapNo;
+  std::vector<Double_t> c2_x, c2_y, c2_z;
   Double_t c3_x, c3_y, c3_z;
   Double_t c4_x, c4_y, c4_z;
 
-  std::array<Double_t,12> c2p_x, c2p_y, c2p_z;
+  std::vector<Double_t> c2p_x, c2p_y, c2p_z;
   Double_t c3p_x, c3p_y, c3p_z;
   Double_t c4p_x, c4p_y, c4p_z;
 
-  std::array<Double_t,12> c2dir_x; 
-  std::array<Double_t,12> c2dir_y; 
-  std::array<Double_t,12> c2dir_z; 
-  std::array<Double_t,12> c2wpos_x;
-  std::array<Double_t,12> c2wpos_y;
-  std::array<Double_t,12> c2wpos_z;
-  std::array<Double_t,12> c2_p;
+  std::vector<Double_t> c2dir_x; 
+  std::vector<Double_t> c2dir_y; 
+  std::vector<Double_t> c2dir_z; 
+  std::vector<Double_t> c2wpos_x;
+  std::vector<Double_t> c2wpos_y;
+  std::vector<Double_t> c2wpos_z;
+  std::vector<Double_t> c2_p;
   int dummy;
 
   Double_t c3dir_x;  
@@ -154,16 +154,16 @@ public:
 
 class TrekTof2Info: public TrekMCtree{
 public:
-  std::array<Int_t,12> gapNo;
-  std::array<Double_t,12> tof2_E, tof2_P, tof2_pL;
-  std::array<Double_t,12> tof2_x, tof2_y, tof2_z;
-  std::array<Double_t,12> tof2_nx, tof2_ny, tof2_nz;
-  std::array<Double_t,12> tof2_px, tof2_py, tof2_pz;
-  std::array<Double_t,12> t2;
+  std::vector<Int_t> gapNo;
+  std::vector<Double_t> tof2_E, tof2_P, tof2_pL;
+  std::vector<Double_t> tof2_x, tof2_y, tof2_z;
+  std::vector<Double_t> tof2_nx, tof2_ny, tof2_nz;
+  std::vector<Double_t> tof2_px, tof2_py, tof2_pz;
+  std::vector<Double_t> t2;
 
-  std::array<Double_t,12> px;
-  std::array<Double_t,12> py;
-  std::array<Double_t,12> pz;
+  std::vector<Double_t> px;
+  std::vector<Double_t> py;
+  std::vector<Double_t> pz;
   int dummy;
 
   TrekTof2Info();
@@ -184,15 +184,15 @@ public:
 
 class TrekTtcInfo: public TrekMCtree{
 public:
-  std::array<Int_t,12> gapNo;
-  std::array<Double_t,12> ttc_E; //required for triggering
+  std::vector<Int_t> gapNo;
+  std::vector<Double_t> ttc_E; //required for triggering
 
   // surface outside the TTC for msc testing
-  std::array<Double_t,12> ttcS_E, ttcS_P, ttc_pL;
-  std::array<Double_t,12> ttc_x,  ttc_y,  ttc_z;
-  std::array<Double_t,12> ttc_nx, ttc_ny, ttc_nz;
-  std::array<Double_t,12> ttc_px, ttc_py, ttc_pz;
-  std::array<Double_t,12> ttc_p;
+  std::vector<Double_t> ttcS_E, ttcS_P, ttc_pL;
+  std::vector<Double_t> ttc_x,  ttc_y,  ttc_z;
+  std::vector<Double_t> ttc_nx, ttc_ny, ttc_nz;
+  std::vector<Double_t> ttc_px, ttc_py, ttc_pz;
+  std::vector<Double_t> ttc_p;
   int dummy;
   TrekTtcInfo();
   ~TrekTtcInfo();
@@ -201,14 +201,14 @@ public:
 
 class TrekCsiInfo: public TrekMCtree{
 public:
-  std::array<TString,768> particle;
-  std::array<Int_t,768> lable, lablePi01, lablePi02;
-  std::array<Int_t,768> csiID, trackID;
-  std::array<Double_t,768> ECsI, addEcsi;
-  std::array<Double_t,768> csi_x, csi_y, csi_z;
-  std::array<Double_t,768> csi_px, csi_py, csi_pz;
-  std::array<Double_t,768> csi_plen, csi_phi, csi_theta;
-  std::array<Double_t,768> t_CsI;
+  std::vector<TString> particle;
+  std::vector<Int_t> lable, lablePi01, lablePi02;
+  std::vector<Int_t> csiID, trackID;
+  std::vector<Double_t> ECsI, addEcsi;
+  std::vector<Double_t> csi_x, csi_y, csi_z;
+  std::vector<Double_t> csi_px, csi_py, csi_pz;
+  std::vector<Double_t> csi_plen, csi_phi, csi_theta;
+  std::vector<Double_t> t_CsI;
   int dummy;
 
   TrekCsiInfo();

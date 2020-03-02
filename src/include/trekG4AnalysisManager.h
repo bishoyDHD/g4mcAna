@@ -29,7 +29,7 @@ private:
   std::string dummy="dummy";
   trekG4Cluster* clust;
   trekG4CsImapper* csiMapper;
-  Int_t nentries;
+  Int_t nentries,size,csiID;
   int d1, d2, d3, pos1, pos2, pos3;
   double GeV;
   double mass; // mass for the particle of interest (scoring)
