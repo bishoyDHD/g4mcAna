@@ -2,8 +2,7 @@
 
 //clusterVar::clusterVar(){}
 
-clusterScore::clusterScore():cpid(1),clustEvalNo(2){
- 
+clusterScore::clusterScore():cpid(1),clustEvalNo(2){ 
 }
 clusterScore::~clusterScore(){
 
@@ -65,7 +64,8 @@ void clusterScore::clusterEval(std::vector<double> &mCrys,std::vector<double> &s
   // manyCrysPhi and singleCrysPhi
   mergeVect(phi,phi2);
   // push cluster variables to container
-  for(UInt_t i=0; i<mCrys.size(); i++){
+  // ordering by highest cluster E
+  for(UInt_t i = 0; i<mCrys.size(); i++){
     // cluster storage:
     px=mCrys[i]*std::sin(theta[i])*std::cos(phi[i]);
     py=mCrys[i]*std::sin(theta[i])*std::sin(phi[i]);
@@ -330,19 +330,60 @@ void clusterScore::clusterEval(std::vector<double> &mCrys,std::vector<double> &s
   // push cluster variables to container
   for(UInt_t i=0; i<mCrys.size(); i++){
     // cluster storage:
-    px=mCrys[i]*std::sin(theta[i])*std::cos(phi[i]);
-    py=mCrys[i]*std::sin(theta[i])*std::sin(phi[i]);
-    pz=mCrys[i]*std::cos(theta[i]);
+    const int index = jthval.getnthVal(mCrys, i);
+    std::cout<<"++++Mixed++++"<<i<<" index ["<<index<<"]: "<<mCrys[index]<<std::endl;
+    px=mCrys[index]*std::sin(theta[index])*std::cos(phi[index]);
+    py=mCrys[index]*std::sin(theta[index])*std::sin(phi[index]);
+    pz=mCrys[index]*std::cos(theta[index]);
     clustvar.clpx=px;
     clustvar.clpy=py;
     clustvar.clpz=pz;
     // evaluate 4-momenta and corresponding vectors
-    clustvar.cpidlv.SetPxPyPzE(px,py,pz,mCrys[i]);
+    clustvar.cpidlv.SetPxPyPzE(px,py,pz,mCrys[index]);
     clustvar.cpidv3.SetXYZ(px,py,pz);
     cvars.push_back(clustvar);
   }
   // cluster evaluation and scoring
+  double newVal=0.;
   switch(clustEvalNo){
+    case 1:
+      // =========================================
+      // Simulation case with threshold set to 0
+      // 2 clusters with highest energies. 
+      // ==========================================
+      for(UInt_t i=0; i<cvars.size()-1; i++){
+        UInt_t m=i+1;
+        for(UInt_t n=m; n<cvars.size(); n++){
+	  diffMass=newVal;
+          std::cout<<diffMass<<"- we have: "<<i<<" + "<<n<<"\n";
+          energy=(mCrys[i]+mCrys[n]);
+          particlelv=cvars[i].cpidlv+cvars[n].cpidlv;
+          opAngle=std::cos(cvars[i].cpidv3.Angle(cvars[n].cpidv3));
+          invMass=particlelv.M();
+          //diffMass=std::abs(mass-invMass);
+          // fill vars for scoring:
+          mdiff.push_back(diffMass);
+          InvMass[diffMass]=invMass;
+          clustE[diffMass]=energy;
+	  openAng[diffMass]=opAngle;
+	  primLV[diffMass]=particlelv;
+          csipx[diffMass]=std::make_pair(cvars[i].clpx,cvars[n].clpx);
+          csipy[diffMass]=std::make_pair(cvars[i].clpy,cvars[n].clpy);
+          csipz[diffMass]=std::make_pair(cvars[i].clpz,cvars[n].clpz);
+          csiE[diffMass]=std::make_pair(mCrys[i],mCrys[n]);
+          csitheta[diffMass]=std::make_pair(theta[i],theta[n]);
+          csiphi[diffMass]=std::make_pair(phi[i],phi[n]);
+          std::cout<<" ... Inv. Mass of pi0 is: "<<diffMass<<std::endl;
+	  std::cout<<" ... primpidLV().Px() "<<primLV[diffMass].Px()<<std::endl;
+	  std::cout<<" ... opening Ang: "<<openAng[diffMass]<<" - "<<opAngle<<std::endl;
+          std::cout<<" ... new energy eval.: "<<clustE[diffMass]<<std::endl;
+          std::cout<<" ..... new x eval: "<<csipx[diffMass].first<<"\t"<<csipx[diffMass].second<<std::endl;
+          std::cout<<" ..... new y eval: "<<csipy[diffMass].first<<"\t"<<csipy[diffMass].second<<std::endl;
+          std::cout<<" ..... new z eval: "<<csipz[diffMass].first<<"\t"<<csipz[diffMass].second<<std::endl;
+	  newVal++;
+        }
+      }
+      break;
     case 2:
       // =========================================
       // Calculate the combinatorial sum assuming
@@ -458,7 +499,46 @@ void clusterScore::clusterEval(const std::vector<double> &eneCrys,const std::vec
     cvars.push_back(clustvar);
   }
   // cluster evaluation prodcedure
+  double newVal=0.;
   switch(clustEvalNo){
+    case 1:
+      // =========================================
+      // Simulation case with threshold set to 0
+      // 2 clusters with highest energies. 
+      // ==========================================
+      for(UInt_t i=0; i<cvars.size()-1; i++){
+        UInt_t m=i+1;
+        for(UInt_t n=m; n<cvars.size(); n++){
+	  diffMass=newVal;
+          std::cout<<diffMass<<"- we have: "<<i<<" + "<<n<<"\n";
+          energy=(eneCrys[i]+eneCrys[n]);
+          particlelv=cvars[i].cpidlv+cvars[n].cpidlv;
+          opAngle=std::cos(cvars[i].cpidv3.Angle(cvars[n].cpidv3));
+          invMass=particlelv.M();
+          //diffMass=std::abs(mass-invMass);
+          // fill vars for scoring:
+          mdiff.push_back(diffMass);
+          InvMass[diffMass]=invMass;
+          clustE[diffMass]=energy;
+	  openAng[diffMass]=opAngle;
+	  primLV[diffMass]=particlelv;
+          csipx[diffMass]=std::make_pair(cvars[i].clpx,cvars[n].clpx);
+          csipy[diffMass]=std::make_pair(cvars[i].clpy,cvars[n].clpy);
+          csipz[diffMass]=std::make_pair(cvars[i].clpz,cvars[n].clpz);
+          csiE[diffMass]=std::make_pair(eneCrys[i],eneCrys[n]);
+          csitheta[diffMass]=std::make_pair(theta[i],theta[n]);
+          csiphi[diffMass]=std::make_pair(phi[i],phi[n]);
+          std::cout<<" ... Inv. Mass of pi0 is: "<<diffMass<<std::endl;
+	  std::cout<<" ... primpidLV().Px() "<<primLV[diffMass].Px()<<std::endl;
+	  std::cout<<" ... opening Ang: "<<openAng[diffMass]<<" - "<<opAngle<<std::endl;
+          std::cout<<" ... new energy eval.: "<<clustE[diffMass]<<std::endl;
+          std::cout<<" ..... new x eval: "<<csipx[diffMass].first<<"\t"<<csipx[diffMass].second<<std::endl;
+          std::cout<<" ..... new y eval: "<<csipy[diffMass].first<<"\t"<<csipy[diffMass].second<<std::endl;
+          std::cout<<" ..... new z eval: "<<csipz[diffMass].first<<"\t"<<csipz[diffMass].second<<std::endl;
+	  newVal++;
+        }
+      }
+      break;
     case 2:
       // =========================================
       // Calculate the combinatorial sum assuming

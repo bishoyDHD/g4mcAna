@@ -21,11 +21,13 @@ int main(int argc,char** argv){
   string name=pargs->getName();
   int channel=pargs->getChannel();
   double mass=pargs->getMass();
+  double threshold=pargs->getThreshold();
   std::cout<<" ...current channel number is: "<<channel<<std::endl;
   trekG4AnalysisManager* trekMC=new trekG4AnalysisManager();
   // initialize
   trekMC->init();
   trekMC->setInvMass(mass);
+  trekMC->setThreshold(threshold);
   trekMC->beginRoot(name, channel);
   trekMC->analyze(file);
   trekMC->writeRoot();

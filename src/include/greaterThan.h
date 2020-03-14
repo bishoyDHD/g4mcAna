@@ -52,16 +52,3 @@ T greaterThan<T>::countGreater(){
   return (size - leftGreater); 
 }
 #endif
-/*
-int main() { 
-  std::array<int,9> arr={3, 3, 4, 7, 7, 7, 11, 13, 13};
-  //int n = sizeof(arr) / sizeof(arr[0]); 
-  
-  const int n=arr.size();
-  int k = 7;
-  greaterThan<int,n> gT(arr, n, k); 
-  std::cout <<gT.countGreater()<<std::endl; 
-  
-  return 0; 
-} 
-*/

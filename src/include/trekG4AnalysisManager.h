@@ -23,6 +23,7 @@ public:
   void writeRoot();
   void init();
   inline void setInvMass(double invMass){mass=invMass;};
+  inline void setThreshold(double thr=0){threshold=thr;};
   TFile* outFile;
 private:
   std::string clustPid1, clustPid2, clustPid3, clustPid4, clustPid5, clustPid6;
@@ -33,6 +34,7 @@ private:
   int d1, d2, d3, pos1, pos2, pos3;
   double GeV;
   double mass; // mass for the particle of interest (scoring)
+  double threshold;
   double g1px, g1py, g1pz, Eg1;
   double g2px, g2py, g2pz, Eg2;
   double g3px, g3py, g3pz, Eg3;

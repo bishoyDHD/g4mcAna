@@ -17,10 +17,11 @@ public:
   int getMaxN(){return nmax;};
   int getChannel(){return channel;};
   double getMass(){return mass;};
+  double getThreshold(){return threshold;};
 private:
   std::string fileName;
   std::string nameRoot;
   int nmax, channel;
-  double mass;
+  double mass,threshold;
 };
 #endif

@@ -57,11 +57,12 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
   gStyle->SetOptStat(0);
   h1ang1=new TH1D("h1ang1",n1.c_str(),55,-1.1,1.1);
   h1ang2=new TH1D("h1ang2",n2.c_str(),55,-1.1,1.1);
-  h1Etot=new TH1D("h1Etot",n3.c_str(),35,0.0,0.30);
-  h1inv=new TH1D("h1inv",n4.c_str(),35,0.0,0.30);
-  h1inv2=new TH1D("h1inv2",n4.c_str(),35,0.0,0.30);
+  h1Etot=new TH1D("h1Etot",n3.c_str(),75,0.0,0.30);
+  h1inv=new TH1D("h1inv",n4.c_str(),75,0.0,0.30);
+  h1inv2=new TH1D("h1inv2",n4.c_str(),75,0.0,0.30);
   h1Ecorr=new TH1D("ecorr",tgtcorr.c_str(),75,-.01,0.30);
   h1invCorr=new TH1D("invCorr","Invariant mass of A' (E_{loss} applied)",75,0.0,0.30);
+  h1Multip=new TH1D("Multip","csiMultiplicity",13,-0.5,12.5);
   // Target energy-loss correction histograms
   std::ostringstream ecorr;
   std::ostringstream h1E,h2E;
@@ -142,6 +143,10 @@ void trekG4Cluster::evalClusters(){
   singPhi=fclusters->getSinglePhi();
   std::cout<<" ........ singleCrys "<<singleCrys<<std::endl;
   std::cout<<" ........ Multi-Crys "<<multiCrys<<std::endl;
+  // if the threshold value is less 10 MeV:
+  // --> only take 2 cluster with highest E
+  if(threshold<10.) fscore->setclusEvalNo(1);
+  if(threshold>10. && ((singleCrys+multiCrys)>3)) goto exitFill;
   if(multiCrys==2 && singleCrys==0){
     std::cout<<"  This is only 2 multiCrys ---|\n";
     fscore->init();
@@ -168,6 +173,7 @@ void trekG4Cluster::evalClusters(){
     std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
     opAng2=fscore->getOpAngleClust();
     prim2lv=fscore->getprimLV();
+    csiMultip=(multiCrys+singleCrys);
   }else
   if(multiCrys==0 && singleCrys==2){
     std::cout<<"  This is only 2 singleCrys ---|\n";
@@ -195,8 +201,9 @@ void trekG4Cluster::evalClusters(){
     std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
     opAng2=fscore->getOpAngleClust();
     prim2lv=fscore->getprimLV();
+    csiMultip=(multiCrys+singleCrys);
   }else
-  if(multiCrys<=3 && singleCrys<=3){
+  if(multiCrys>1 || singleCrys>1){
     if(((multiCrys==1 && singleCrys==0)||(multiCrys==0 && singleCrys==1))){
       fscore->init(); 
       goto exitFill;
@@ -237,6 +244,7 @@ void trekG4Cluster::evalClusters(){
     std::cout<<" **** g1px is => "<<fscore->getclPx()<<"\n";
     opAng2=fscore->getOpAngleClust();
     prim2lv=fscore->getprimLV();
+    csiMultip=(multiCrys+singleCrys);
   }
   if(prim2lv.E()>.04 && prim2lv.E()<.250){
     if(prim2lv.M()>.05/* && prim2lv.M()<.150*/)
@@ -348,6 +356,7 @@ void trekG4Cluster::fillHistos(){
   //opAng2=std::cos(par1v3.Angle(par2v3));
   h1ang2->Fill(opAng2);
   h1ang1->Fill(opAng1);
+  h1Multip->Fill(csiMultip);
 }
 // --------------->  PLOT HISTOGRAMS <----------------
 void trekG4Cluster::plotHistos(){

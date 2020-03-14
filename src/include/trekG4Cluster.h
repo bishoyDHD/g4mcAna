@@ -44,14 +44,16 @@ public:
   void setScoreMass(double sMass); // set mass for scoring
   void plotHistos();
   void setClusterVar(int j,double Enecsi);
+  inline void setThreshold(double a){threshold=a;}
 private:
   int multiCrys, singleCrys;
+  double threshold;
   double mass;
   trekG4findClusters* fclusters;
   std::string tgtn1, tgtn2, tgtn3, tgtcorr;
   std::string primPid1, primPid2, primPid3, primPid4;
   std::string clustPid1, clustPid2, clustPid3, clustPid4, clustPid5, clustPid6;
-  int labelPi0;
+  int labelPi0,csiMultip;
   double primx,primy,primz;
   double E2clust;
   double primtgt1px,primtgt1py,primtgt1pz;
@@ -81,6 +83,7 @@ private:
   TH1D* h1inv2;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
   TH1D* h1Eloss[4];
+  TH1D* h1Multip;
   TH2D* h2Eloss[4];
   // LorentzVector definitions
   TLorentzVector par1lv,par2lv,par3lv,par4lv,pi0lv,piPlv,prim2lv;

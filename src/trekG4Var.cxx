@@ -12,6 +12,7 @@ void trekG4Var::printUsage(std::string name){
   std::cout<<" -c #channel: Enter corresponding signal channel number \n";
   std::cout<<"              to be used for cluster analysis \n";
   std::cout<<" -f:          Name of the simulation file\n";
+  std::cout<<" -t:          Set CsI(Tl) threshold\n";
   std::cout<<" -n #number:  maximum number of events to be processed, currently moot.\n";
   std::cout<<" -m:          mass of particle of interest (used for scoring) \n";
   std::cout<<" -o out.root: string out.root is the name of the output ROOT file. By default, it is e36g4MC.root\n";
@@ -42,7 +43,10 @@ bool trekG4Var::parseArgs(int argc, char** argv){
 	  break;
 	case 'm':
 	  mass=std::atof(argv[i+1]);
-	  //std::cout<< " mass value has be set to: "<<mass<<"\n";
+	  i++;
+	  break;
+	case 't':
+	  threshold=std::atof(argv[i+1]);
 	  i++;
 	  break;
 	case 'o':

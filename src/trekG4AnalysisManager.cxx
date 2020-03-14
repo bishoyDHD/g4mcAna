@@ -80,6 +80,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
   double g2x, g2y, g2z;
   double g3x, g3y, g3z;
   int labelPi0;
+  clust->setThreshold(threshold);
   // Event loop...
   std::cout<<" Entering event loop... \n";
   for(Int_t i=0; i<nentries; i++){
@@ -119,7 +120,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       }
     }*/
     for(UInt_t j=0; j<csiInfo->csiID.size(); j++){
-      if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>1){
+      if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
         labelPi0=csiInfo->lablePi01[j];
 	csiID=csiInfo->csiID[j];
         //if(labelPi0!=0) goto endLoop;

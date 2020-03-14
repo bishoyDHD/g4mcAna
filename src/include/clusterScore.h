@@ -15,6 +15,7 @@
 #include <math.h>
 #include <numeric>
 #include <map>
+#include "nthval.h"
 // container class for cluster variables
 struct clusterVar{
   // cluster particle pid are clus1 etc...
@@ -45,6 +46,7 @@ public:
   // will be used for heterogeneous cluster types
   void mergeVect(std::vector<double>& clust1,std::vector<double>& clust2);
   void setKey(double key);
+  inline void setclusEvalNo(int a=2){clustEvalNo=a;}
   void setE(const std::vector<double> &totE);
   // calculate the Energy, inv. mass, angles, position, momentum etc.
   //  from given configuration of clusters
@@ -100,6 +102,7 @@ protected:
   double theta,phi;
   TLorentzVector particlelv;
   TVector3 particle3v;
+  nthval<double> jthval;
 private:
   int clustEvalNo;
   std::vector<bool> v; // start with default size
