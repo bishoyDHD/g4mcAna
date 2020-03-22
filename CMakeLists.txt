@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.5)
 project(g4mcAna)
 
 #add_subdirectory(trkDictdir)
+FIND_PACKAGE(OpenMP)
 
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
@@ -38,8 +39,9 @@ ROOT_GENERATE_DICTIONARY(dictDir ${CMAKE_CURRENT_SOURCE_DIR}/src/include/TrekMCt
 add_executable(e36g4mcAna e36G4Ana.cxx dictDir ${sources} ${headers})
 
 #link executable to the e36g4mcAna
-target_link_libraries(e36g4mcAna "-L${ROOT_LIBRARY_DIR}" ${ROOT_LIBRARIES})
-
+if(OpenMP_CXX_FOUND)
+	target_link_libraries(e36g4mcAna PUBLIC OpenMP::OpenMP_CXX "-L${ROOT_LIBRARY_DIR}" ${ROOT_LIBRARIES})
+endif()
 # copy *.dat files into build dir
 set(datFiles
   csiMap.dat

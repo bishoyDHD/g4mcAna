@@ -57,11 +57,11 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
   gStyle->SetOptStat(0);
   h1ang1=new TH1D("h1ang1",n1.c_str(),55,-1.1,1.1);
   h1ang2=new TH1D("h1ang2",n2.c_str(),55,-1.1,1.1);
-  h1Etot=new TH1D("h1Etot",n3.c_str(),75,0.0,0.30);
-  h1inv=new TH1D("h1inv",n4.c_str(),75,0.0,0.30);
-  h1inv2=new TH1D("h1inv2",n4.c_str(),75,0.0,0.30);
-  h1Ecorr=new TH1D("ecorr",tgtcorr.c_str(),75,-.01,0.30);
-  h1invCorr=new TH1D("invCorr","Invariant mass of A' (E_{loss} applied)",75,0.0,0.30);
+  h1Etot=new TH1D("h1Etot",n3.c_str(),65,0.0,0.30);
+  h1inv=new TH1D("h1inv",n4.c_str(),65,0.0,0.30);
+  h1inv2=new TH1D("h1inv2",n4.c_str(),65,0.0,0.30);
+  h1Ecorr=new TH1D("ecorr",tgtcorr.c_str(),65,.0,0.30);
+  h1invCorr=new TH1D("invCorr","Invariant mass of A' (E_{loss} applied)",65,0.0,0.30);
   h1Multip=new TH1D("Multip","csiMultiplicity",13,-0.5,12.5);
   // Target energy-loss correction histograms
   std::ostringstream ecorr;
@@ -246,8 +246,8 @@ void trekG4Cluster::evalClusters(){
     prim2lv=fscore->getprimLV();
     csiMultip=(multiCrys+singleCrys);
   }
-  if(prim2lv.E()>.04 && prim2lv.E()<.250){
-    if(prim2lv.M()>.05/* && prim2lv.M()<.150*/)
+  if(prim2lv.E()>.04 && prim2lv.E()<.30){
+    if(prim2lv.M()>.04/* && prim2lv.M()<.150*/)
       fillHistos();
   }
   exitFill:

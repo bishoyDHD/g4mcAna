@@ -23,7 +23,7 @@ public:
   void writeRoot();
   void init();
   inline void setInvMass(double invMass){mass=invMass;};
-  inline void setThreshold(double thr=0){threshold=thr;};
+  inline void setThreshold(double thr=20.){threshold=thr;};
   TFile* outFile;
 private:
   std::string clustPid1, clustPid2, clustPid3, clustPid4, clustPid5, clustPid6;

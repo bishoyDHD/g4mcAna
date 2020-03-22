@@ -34,6 +34,9 @@ int main(int argc,char** argv){
   // delete respective pointers
   delete trekMC;
   delete file;
+  std::cout<<"******************************************\n";
+  std::cout<<"** Writing ROOT file: "<<name<<std::endl;
+  std::cout<<"******************************************\n";
 
   return 0;
 }

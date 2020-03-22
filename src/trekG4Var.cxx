@@ -1,7 +1,6 @@
 #include <trekG4Var.h>
 
-trekG4Var::trekG4Var():nameRoot("e36g4MC.root"),channel(7){
-
+trekG4Var::trekG4Var():nameRoot("e36g4MC.root"),channel(7),threshold(20.0){
 }
 trekG4Var::~trekG4Var(){
 
