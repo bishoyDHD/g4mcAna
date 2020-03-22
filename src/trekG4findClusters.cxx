@@ -94,10 +94,139 @@ void trekG4findClusters::findClusters(std::map<std::pair<double,double>,double> 
       std::cout<<" Already checked this Crystal... moving on \n";
       goto checkedCrys;
     }
-    if(csiClust[angP1] > 0 &&  csiClust[angP2] > 0 &&  csiClust[angP3] > 0 && csiClust[angP4] > 0 &&
-      csiClust[angP5] > 0 && csiClust[angP6] > 0 && csiClust[angP7] > 0 &&
-      csiClust[angP8] > 0){
+    if(csiClust[angP1]>0 && csiClust[angP2]>0 && csiClust[angP3]>0 &&
+       csiClust[angP4]>0 && csiClust[angP5]>0 && csiClust[angP6]>0 && 
+       csiClust[angP7] > 0 && csiClust[angP8]>0){
       std::cout<<"  Total number of cluster crystals is 8 \n";
+      if(csiClust[angP1]>0){
+        std::cout<<" This crystal Cluster pulse-height P1: "<<csiClust[angP1];
+        std::cout<<" ["<<std::get<0>(angP1)<<", "<<std::get<1>(angP1)<<"] \n";
+        if(csiCheck[angP1]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP1];
+          thetaE=thetaE+csiClust[angP1]*(std::get<0>(angP1));
+          phiE  =phiE  +csiClust[angP1]*(std::get<1>(angP1));
+          //clusZ=clusZ  +csiClust[angP1]*csiZ[angP1];
+          //clusR=clusR  +csiClust[angP1]*csiR[angP1];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP1]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      if(csiClust[angP2]>0){
+        std::cout<<" This crystal Cluster finder in pair loop P2: "<<csiClust[angP2];
+        std::cout<<" ["<<std::get<0>(angP2)<<", "<<std::get<1>(angP2)<<"] \n";
+        if(csiCheck[angP2]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP2];
+          thetaE=thetaE+csiClust[angP2]*(std::get<0>(angP2));
+          phiE  =phiE  +csiClust[angP2]*(std::get<1>(angP2));
+          //clusZ=clusZ  +csiClust[angP2]*csiZ[angP2];
+          //clusR=clusR  +csiClust[angP2]*csiR[angP2];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP2]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      if(csiClust[angP3]>0){
+        std::cout<<" This crystal Cluster finder in pair loop P3: "<<csiClust[angP3];
+        std::cout<<" ["<<std::get<0>(angP3)<<", "<<std::get<1>(angP3)<<"] \n";
+        if(csiCheck[angP3]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP3];
+          thetaE=thetaE+csiClust[angP3]*(std::get<0>(angP3));
+          phiE  =phiE  +csiClust[angP3]*(std::get<1>(angP3));
+          //clusZ=clusZ  +csiClust[angP3]*csiZ[angP3];
+          //clusR=clusR  +csiClust[angP3]*csiR[angP3];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP3]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      if(csiClust[angP4]>0){
+        std::cout<<" This crystal Cluster finder in pair loop P4: "<<csiClust[angP4];
+        std::cout<<" ["<<std::get<0>(angP4)<<", "<<std::get<1>(angP4)<<"] \n";
+        if(csiCheck[angP4]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP4];
+          thetaE=thetaE+csiClust[angP4]*(std::get<0>(angP4));
+          phiE  =phiE  +csiClust[angP4]*(std::get<1>(angP4));
+          //clusZ=clusZ  +csiClust[angP4]*csiZ[angP4];
+          //clusR=clusR  +csiClust[angP4]*csiR[angP4];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP4]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      if(csiClust[angP5]>0){
+        std::cout<<" This crystal Cluster finder in pair loop P5: "<<csiClust[angP5];
+        std::cout<<" ["<<std::get<0>(angP5)<<", "<<std::get<1>(angP5)<<"] \n";
+        if(csiCheck[angP5]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP5];
+          thetaE=thetaE+csiClust[angP5]*(std::get<0>(angP5));
+          phiE  =phiE  +csiClust[angP5]*(std::get<1>(angP5));
+          //clusZ=clusZ  +csiClust[angP5]*csiZ[angP5];
+          //clusR=clusR  +csiClust[angP5]*csiR[angP5];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP5]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      if(csiClust[angP6]>0){
+        std::cout<<" This crystal Cluster finder in pair loop P6: "<<csiClust[angP6];
+        std::cout<<" ["<<std::get<0>(angP6)<<", "<<std::get<1>(angP6)<<"] \n";
+        if(csiCheck[angP6]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP6];
+          thetaE=thetaE+csiClust[angP6]*(std::get<0>(angP6));
+          phiE  =phiE  +csiClust[angP6]*(std::get<1>(angP6));
+          //clusZ=clusZ  +csiClust[angP6]*csiZ[angP6];
+          //clusR=clusR  +csiClust[angP6]*csiR[angP6];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP6]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      if(csiClust[angP7]>0){
+        std::cout<<" This crystal Cluster finder in pair loop P7: "<<csiClust[angP7];
+        std::cout<<" ["<<std::get<0>(angP7)<<", "<<std::get<1>(angP7)<<"] \n";
+        if(csiCheck[angP7]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP7];
+          thetaE=thetaE+csiClust[angP7]*(std::get<0>(angP7));
+          phiE  =phiE  +csiClust[angP7]*(std::get<1>(angP7));
+          //clusZ=clusZ  +csiClust[angP7]*csiZ[angP7];
+          //clusR=clusR  +csiClust[angP7]*csiR[angP7];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP7]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      if(csiClust[angP8]>0){
+        std::cout<<" This crystal Cluster finder in pair loop P8: "<<csiClust[angP8];
+        std::cout<<" ["<<std::get<0>(angP8)<<", "<<std::get<1>(angP8)<<"] \n";
+        if(csiCheck[angP8]){
+          clusCrys=clusCrys+1;
+          Eclus=Eclus+csiClust[angP8];
+          thetaE=thetaE+csiClust[angP8]*(std::get<0>(angP8));
+          phiE  =phiE  +csiClust[angP8]*(std::get<1>(angP8));
+          //clusZ=clusZ  +csiClust[angP8]*csiZ[angP8];
+          //clusR=clusR  +csiClust[angP8]*csiR[angP8];
+          std::cout<<" This crystal is now removed from the list: "<<std::endl;
+          csiCheck[angP8]=false;
+        }else{
+          std::cout<<" Already checked this crystal \n";
+        }
+      }
+      //std::abort();
     }else if(csiClust[angP1]>0 || csiClust[angP2]>0 || csiClust[angP3]>0 || csiClust[angP4]>0 || 
       csiClust[angP5]>0 || csiClust[angP6]>0 || csiClust[angP7]>0 || csiClust[angP8]>0 ||
       csiClust[angE1]>0 || csiClust[angE2]>0 || csiClust[angE3]>0 || csiClust[angE4]>0 ||
