@@ -109,16 +109,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       goto endLoop;
     }
     std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
-    /*
-    for(int n=0; n<12;n++){
-      for(int m=0; m<3;m++){
-        if(tgtInfo->targetE[m]<90.0 && tof1Info->tof1_E<90.0){
-          if(ttcInfo->ttc_E[n]<90.0 && tof2Info->tof2_E[n]<=90.0){
-	    goto endLoop;
-	  }
-	}
-      }
-    }*/
     for(UInt_t j=0; j<csiInfo->csiID.size(); j++){
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
         labelPi0=csiInfo->lablePi01[j];

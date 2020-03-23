@@ -247,7 +247,7 @@ void trekG4Cluster::evalClusters(){
     csiMultip=(multiCrys+singleCrys);
   }
   if(prim2lv.E()>.04 && prim2lv.E()<.30){
-    if(prim2lv.M()>.04/* && prim2lv.M()<.150*/)
+    if(prim2lv.M()>.01/* && prim2lv.M()<.150*/)
       fillHistos();
   }
   exitFill:
