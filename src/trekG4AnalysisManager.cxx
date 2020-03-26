@@ -1,4 +1,5 @@
 #include "trekG4AnalysisManager.h"
+#include "trekG4Mass2.h"
 
 trekG4AnalysisManager::trekG4AnalysisManager(){
   std::cout<<" --- Starting trekG4AnalysisManager...\n";
@@ -32,6 +33,9 @@ void trekG4AnalysisManager::setClusterPID(std::string pid1,std::string pid2,std:
 }
 void trekG4AnalysisManager::beginRoot(std::string name,int channel){
   outFile=new TFile(name.c_str(),"RECREATE");
+  //h1ke2=new TH1D("ke2", "Momentum of e^{+}",150,-9000,9000);
+  h1ke2=new TH1D("ke2", "Momentum of e^{+}",150,-9000.0,25000);
+  //h1ke2=new TH1D("ke2", "Momentum of e^{+}",150,0.0,35000);
   switch(channel){
     case 7:
       std::cout<<" --- Checking out channel numnber 7 for kicks!!! \n";
@@ -81,8 +85,10 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
   double g3x, g3y, g3z;
   int labelPi0;
   clust->setThreshold(threshold);
+  double k=149.;
+  double pc4=0.;
   // Event loop...
-  std::cout<<" Entering event loop... \n";
+  //std::cout<<" Entering event loop... \n";
   for(Int_t i=0; i<nentries; i++){
     pTree->GetEntry(i);
     // clear these entries at the beginning of every event
@@ -92,7 +98,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     clust->empty();
     // make sure this is a good gap event: 
     // Check experimental trigger condition. 
-    double k=149.;
     size=tof2Info->tof2_P.size();
     greaterThan<double> gtof2(tof2Info->tof2_P, size, k);
     size=ttcInfo->ttc_p.size();
@@ -108,7 +113,14 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
        tof1Info->tof1_E<k || gc2.countGreater()==0){
       goto endLoop;
     }
-    std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
+    pc4=std::sqrt(std::pow(mwpcInfo->c4p_x,2)+std::pow(mwpcInfo->c4p_y,2)+std::pow(mwpcInfo->c4p_z,2));
+    for(UInt_t n=0; n<tof2Info->tof2_P.size(); n++){
+      if(tof2Info->tof2_P[n]>=150. && pc4>=150.){
+        trekG4Mass2<double> m2(tof1Info->t1,tof2Info->t2[n],tof1Info->tof1_pL,tof2Info->tof2_pL[n],pc4);
+        h1ke2->Fill(m2.mass2());
+      }
+    }
+    //std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
     for(UInt_t j=0; j<csiInfo->csiID.size(); j++){
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
         labelPi0=csiInfo->lablePi01[j];

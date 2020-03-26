@@ -10,6 +10,7 @@
 #include <TTree.h>
 #include <TLorentzVector.h>
 #include <TVector3.h>
+#include <TRandom3.h>
 #include <TFile.h>
 #include <TH1D.h>
 
@@ -26,6 +27,8 @@ public:
   inline void setThreshold(double thr=20.){threshold=thr;};
   TFile* outFile;
 private:
+  TRandom3 random;
+  Double_t dt;
   std::string clustPid1, clustPid2, clustPid3, clustPid4, clustPid5, clustPid6;
   std::string dummy="dummy";
   trekG4Cluster* clust;
@@ -56,5 +59,6 @@ private:
   TrekMwpcInfo* mwpcInfo;
   TrekTtcInfo* ttcInfo;
   TrekTof2Info* tof2Info;
+  TH1D* h1ke2;
 };
 #endif
