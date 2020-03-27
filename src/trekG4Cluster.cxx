@@ -246,7 +246,7 @@ void trekG4Cluster::evalClusters(){
     prim2lv=fscore->getprimLV();
     csiMultip=(multiCrys+singleCrys);
   }
-  if(prim2lv.E()>.04 && prim2lv.E()<.30){
+  if(prim2lv.E()>.04){
     if(prim2lv.M()>.01/* && prim2lv.M()<.150*/)
       fillHistos();
   }

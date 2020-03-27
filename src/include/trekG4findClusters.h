@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <TMath.h>
+#include <TRandom3.h>
 
 class trekG4findClusters{
 public:

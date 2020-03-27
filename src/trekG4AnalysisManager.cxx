@@ -33,9 +33,7 @@ void trekG4AnalysisManager::setClusterPID(std::string pid1,std::string pid2,std:
 }
 void trekG4AnalysisManager::beginRoot(std::string name,int channel){
   outFile=new TFile(name.c_str(),"RECREATE");
-  //h1ke2=new TH1D("ke2", "Momentum of e^{+}",150,-9000,9000);
-  h1ke2=new TH1D("ke2", "Momentum of e^{+}",150,-9000.0,25000);
-  //h1ke2=new TH1D("ke2", "Momentum of e^{+}",150,0.0,35000);
+  h1M2=new TH1D("mass2", "Mass Squared",150,-15000.0,35000);
   switch(channel){
     case 7:
       std::cout<<" --- Checking out channel numnber 7 for kicks!!! \n";
@@ -117,7 +115,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     for(UInt_t n=0; n<tof2Info->tof2_P.size(); n++){
       if(tof2Info->tof2_P[n]>=150. && pc4>=150.){
         trekG4Mass2<double> m2(tof1Info->t1,tof2Info->t2[n],tof1Info->tof1_pL,tof2Info->tof2_pL[n],pc4);
-        h1ke2->Fill(m2.mass2());
+        h1M2->Fill(m2.mass2());
       }
     }
     //std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
@@ -125,8 +123,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
         labelPi0=csiInfo->lablePi01[j];
 	csiID=csiInfo->csiID[j];
-        //if(labelPi0!=0) goto endLoop;
-	  fired1=true;
+	fired1=true;
 	clust->setClusterVar(csiID,csiInfo->addEcsi[j]/1000.);
       }
     } // end of CsI for loop

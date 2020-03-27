@@ -24,7 +24,7 @@ private:
 };
 template<typename T> 
 double trekG4Mass2<T>::beta2(){
-  beta=plen/(gRandom->Gaus(dt,100e-12)*c);
+  beta=plen/(gRandom->Gaus(dt,350e-12)*c);
   b2=beta*beta;
   return b2;
 }

@@ -607,6 +607,7 @@ void trekG4findClusters::findClusters(std::map<std::pair<double,double>,double> 
     }
     if(clusCrys>=2){
       numOfClus++;
+      Eclus=gRandom->Gaus(Eclus,.00978);
       // perform energy-weighting and convert from deg-->rad
       rtheta=TMath::DegToRad()*(thetaE/Eclus);
       rphi=TMath::DegToRad()*(phiE/Eclus);
@@ -618,6 +619,7 @@ void trekG4findClusters::findClusters(std::map<std::pair<double,double>,double> 
     }
     if(clusCrys==1){
       numOfsingleClus++;
+      Eclus=gRandom->Gaus(Eclus,.00978);
       rtheta=TMath::DegToRad()*(thetaE/Eclus);
       rphi=TMath::DegToRad()*(phiE/Eclus);
       singTheta.push_back(rtheta);
