@@ -58,10 +58,10 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
   h1ang1=new TH1D("h1ang1",n1.c_str(),55,-1.1,1.1);
   h1ang2=new TH1D("h1ang2",n2.c_str(),55,-1.1,1.1);
   h1Etot=new TH1D("h1Etot",n3.c_str(),65,0.0,0.30);
-  h1inv=new TH1D("h1inv",n4.c_str(),65,0.0,0.30);
-  h1inv2=new TH1D("h1inv2",n4.c_str(),65,0.0,0.30);
+  h1inv=new TH1D("h1inv",n4.c_str(),65,0.0,0.25);
+  h1inv2=new TH1D("h1inv2",n4.c_str(),65,0.0,0.25);
   h1Ecorr=new TH1D("ecorr",tgtcorr.c_str(),65,.0,0.30);
-  h1invCorr=new TH1D("invCorr","Invariant mass of A' (E_{loss} applied)",65,0.0,0.30);
+  h1invCorr=new TH1D("invCorr","Invariant mass of A' (E_{loss} applied)",65,0.0,0.25);
   h1Multip=new TH1D("Multip","csiMultiplicity",13,-0.5,12.5);
   // Target energy-loss correction histograms
   std::ostringstream ecorr;
