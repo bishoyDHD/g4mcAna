@@ -150,8 +150,8 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
       clust->evalClusters();
       // Lorentz Vector and invariant mass eval for tgt secondaries
-      clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
-      clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
+      //clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
+      //clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
       //clust->fillHistos();
       clust->empty();
       /*

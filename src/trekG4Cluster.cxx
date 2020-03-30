@@ -69,11 +69,11 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
   h1E<<"h1Eloss_";
   h2E<<"h2Eloss_";
   //h1ang3=new TH1D("h1ang3",tgtn1.c_str(),25,-1.05,1.05);
-  for(int i=0; i<4; i++){
+  for(int i=0; i<2; i++){
     h1E<<i;
     h2E<<i;
     h1Eloss[i]=new TH1D(h1E.str().c_str(),tgtn2.c_str(),25,-.01,0.15);
-    h2Eloss[i]=new TH2D(h2E.str().c_str(),tgtn3.c_str(),50,0.0,100.,25,0.0,0.05);
+    //h2Eloss[i]=new TH2D(h2E.str().c_str(),tgtn3.c_str(),50,0.0,100.,25,0.0,0.05);
   }
 }
 void trekG4Cluster::setcsiMap(){
@@ -356,6 +356,8 @@ void trekG4Cluster::fillHistos(){
   //opAng2=std::cos(par1v3.Angle(par2v3));
   h1ang2->Fill(opAng2);
   h1ang1->Fill(opAng1);
+  h1Eloss[0]->Fill(par1E);
+  h1Eloss[1]->Fill(par2E);
   h1Multip->Fill(csiMultip);
 }
 // --------------->  PLOT HISTOGRAMS <----------------
