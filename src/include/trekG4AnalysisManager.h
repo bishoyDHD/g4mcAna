@@ -59,6 +59,6 @@ private:
   TrekMwpcInfo* mwpcInfo;
   TrekTtcInfo* ttcInfo;
   TrekTof2Info* tof2Info;
-  TH1D* h1M2;
+  TH1D* h1M2,*h1P;
 };
 #endif

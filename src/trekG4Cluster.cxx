@@ -1,4 +1,5 @@
 #include "trekG4Cluster.h"
+#include "trekG4PiZeroBoost.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -47,6 +48,15 @@ void trekG4Cluster::primaryPID(std::string p1,std::string p2,std::string p3,std:
 }
 // define secondary particles according to channel
 // ignore 2-body decays
+void trekG4Cluster::setPID(std::string pid1,std::string pid2){
+  clustPid1=pid1;
+  clustPid2=pid2;
+}
+void trekG4Cluster::setPID(std::string pid1,std::string pid2,std::string pid3){
+  clustPid1=pid1;
+  clustPid2=pid2;
+  clustPid3=pid3;
+}
 void trekG4Cluster::setPID(std::string pid1,std::string pid2,std::string pid3,std::string pid4,std::string pid5,std::string pid6){
   clustPid1=pid1;     clustPid4=pid4;
   clustPid2=pid2;     clustPid5=pid5;
@@ -101,27 +111,27 @@ void trekG4Cluster::setScoreMass(double sMass){
 void trekG4Cluster::set2ndryParticle(double px,double py, double pz, double E,int num){
   switch(num){
     case 1:
-      par1px=px;
-      par1py=py;
-      par1pz=pz;
-      par1E=E;
-      par1lv.SetPxPyPzE(par1px,par1py,par1pz,par1E);
+      tgtid1px=px;
+      tgtid1py=py;
+      tgtid1pz=pz;
+      tgtid1E=E;
+      par1lv.SetPxPyPzE(tgtid1px,tgtid1py,tgtid1pz,tgtid1E);
       break;
     case 2:
-      par2px=px;
-      par2py=py;
-      par2pz=pz;
-      par2E=E;
-      par2lv.SetPxPyPzE(par2px,par2py,par2pz,par2E);
+      tgtid2px=px;
+      tgtid2py=py;
+      tgtid2pz=pz;
+      tgtid2E=E;
+      par2lv.SetPxPyPzE(tgtid2px,tgtid2py,tgtid2pz,tgtid2E);
       prim2lv=par1lv+par2lv;
       h1inv2->Fill(prim2lv.M());
       break;
     case 3:
-      par3px=px;
-      par3py=py;
-      par3pz=pz;
-      par3E=E;
-      par3lv.SetPxPyPzE(par3px,par3py,par3pz,par3E);
+      tgtid3px=px;
+      tgtid3py=py;
+      tgtid3pz=pz;
+      tgtid3E=E;
+      par3lv.SetPxPyPzE(tgtid3px,tgtid3py,tgtid3pz,tgtid3E);
       prim2lv=par1lv+par2lv+par3lv;
       break;
     default:
@@ -435,4 +445,41 @@ void trekG4Cluster::plotHistos(){
   h1invCorr->GetYaxis()->SetTitle("counts/bin");
   h1invCorr->Draw("hist");
   c5->Write();*/
+}
+void trekG4Cluster::plotHistos(TH1D* h1P){
+  TCanvas* c1=new TCanvas("c1","Inv. Mass and total E",800,900);
+  TCanvas* c2=new TCanvas("c2","Energy Loss 2 gammas",800,900);
+  TCanvas* c3=new TCanvas("c3","2D Eloss vs path length",900,700);
+  TCanvas* c4=new TCanvas("c4","2D Eloss vs path length",900,600);
+  TCanvas* c5=new TCanvas("c5","Inv. Mass and total E corr",800,900);
+
+  std::ostringstream E1, Eclustpid1, Eclustpid2, cosTheta1, cosTheta2, M;
+  E1<<"E_{"<<clustPid1<<clustPid2<<"} [GeV]";
+  M<<"M_{"<<clustPid1<<clustPid2<<"} [GeV/c^{2}]";
+  cosTheta1<<"cos(#theta_{"<<clustPid1<<clustPid2<<"})";
+  cosTheta2<<"cos(#theta_{"<<primPid1<<primPid2<<"})";
+  Eclustpid1<<"E_{"<<clustPid1<<"} [GeV]";
+  Eclustpid2<<"E_{"<<clustPid2<<"} [GeV]";
+  c1->Divide(2,2);
+  c1->cd(1);
+  h1P->GetXaxis()->SetTitle("momentum [GeV]");
+  h1P->GetXaxis()->SetTitleSize(0.045);
+  h1P->GetYaxis()->SetTitle("counts/bin");
+  h1P->Draw("hist");
+  c1->cd(2);
+  h1Etot->GetXaxis()->SetTitle(E1.str().c_str());
+  h1Etot->GetXaxis()->SetTitleSize(0.045);
+  h1Etot->GetYaxis()->SetTitle("counts/bin");
+  h1Etot->Draw("hist");
+  c1->cd(3);
+  h1inv->GetXaxis()->SetTitle(M.str().c_str());
+  h1inv->GetXaxis()->SetTitleSize(0.045);
+  h1inv->GetYaxis()->SetTitle("counts/bin");
+  h1inv->Draw("hist");
+  c1->cd(4);
+  h1ang2->GetXaxis()->SetTitle(cosTheta1.str().c_str());
+  h1ang2->GetXaxis()->SetTitleSize(0.045);
+  h1ang2->GetYaxis()->SetTitle("counts/bin");
+  h1ang2->Draw("hist");
+  c1->Write();
 }

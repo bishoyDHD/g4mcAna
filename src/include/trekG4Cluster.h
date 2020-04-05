@@ -23,6 +23,9 @@ public:
   void defHistos(std::string,std::string,std::string,std::string);
   void fillHistos();
   void setPi0label(int lpi0);
+  void setPID(std::string pid1,std::string pid2);
+  void setPID(std::string pid1,std::string pid2,std::string pid3);
+  void setPID(std::string pid1,std::string pid2,std::string pid3,std::string pid4);
   void setPID(std::string pid1,std::string pid2,std::string pid3,std::string pid4,std::string pid5,std::string pid6);
   void primaryPID(std::string p1,std::string p2,std::string p3,std::string p4);
   void primtgtEloss(double px,double py,double pz,double tgtE,double tgtpL);
@@ -43,6 +46,7 @@ public:
   void calcMolierRad(double px,double py,double pz,double energy);
   void setScoreMass(double sMass); // set mass for scoring
   void plotHistos();
+  void plotHistos(TH1D*);
   void setClusterVar(int j,double Enecsi);
   inline void setThreshold(double a){threshold=a;}
 private:
@@ -65,6 +69,10 @@ private:
   double par2px,par2py,par2pz,par2E,par2theta,par2phi;
   double par3px,par3py,par3pz,par3E,par3theta,par3phi;
   double par4px,par4py,par4pz,par4E,par4theta,par4phi;
+  // secondaries in the target
+  double tgtid1px,tgtid1py,tgtid1pz,tgtid1E,tgtid1theta,tgtid1phi;
+  double tgtid2px,tgtid2py,tgtid2pz,tgtid2E,tgtid2theta,tgtid2phi;
+  double tgtid3px,tgtid3py,tgtid3pz,tgtid3E,tgtid3theta,tgtid3phi;
   double primtgtE1, primtgtPl1;
   double targE1, targPl1;
   double targE2, targPl2;
