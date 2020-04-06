@@ -12,6 +12,7 @@ public:
   trekG4PiZeroBoost(double Px,double Py,double Pz){
     px=Px; py=Py; pz=Pz;
     p_piP=sqrt(pow(px,2)+pow(py,2)+pow(pz,2));
+    EpiP=sqrt(pow(p_piP,2)+pow(m_piP,2));
   };
   double calcEpi0();
   double getBx();
@@ -25,7 +26,6 @@ private:
 };
 template<typename T>
 double trekG4PiZeroBoost<T>::calcEpi0(){
-  EpiP=sqrt(pow(p_piP,2)+pow(m_piP,2));
   Epi0=M_k-EpiP;
   return Epi0;
 }
@@ -36,12 +36,12 @@ double trekG4PiZeroBoost<T>::getBx(){
 }
 template<typename T>
 double trekG4PiZeroBoost<T>::getBy(){
-  bx=px/calcEpi0();
+  by=py/calcEpi0();
   return by;
 }
 template<typename T>
 double trekG4PiZeroBoost<T>::getBz(){
-  bx=px/calcEpi0();
+  bz=pz/calcEpi0();
   return bz;
 }
 #endif

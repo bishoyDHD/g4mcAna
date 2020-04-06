@@ -47,5 +47,6 @@ private:
   double ntheta,nphi,Eclus,thetaE,phiE,clusZ,clusR;
   int clusCrys;
   int numOfsingleClus,numOfClus;
+  double E_res=0.;
 };
 #endif

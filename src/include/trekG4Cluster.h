@@ -88,7 +88,7 @@ private:
   std::vector<double> singleEne,singTheta,singPhi;
   double opAng1, opAng2; // opAng1 is for pi+pi0
   TH1D* h1ang1,*h1ang2,*h1ang3,*h1Etot,*h1inv;
-  TH1D* h1inv2;
+  TH1D* h1inv2,*h1ggAng;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
   TH1D* h1Eloss[4];
   TH1D* h1Multip;
@@ -97,10 +97,12 @@ private:
   TLorentzVector par1lv,par2lv,par3lv,par4lv,pi0lv,piPlv,prim2lv;
   TLorentzVector par1lvCorr, par2lvCorr, par3lvCorr;
   TLorentzVector par4lvCorr, pi0lvCorr, piPlvCorr;
+  TLorentzVector gamma1lv, gamma2lv;
   // TVector3 definitions
   TVector3 par1v3, par2v3, par3v3, par4v3, pi0v3, piPv3;
   TVector3 par1v3Corr, par2v3Corr, par3v3Corr;
   TVector3 par4v3Corr, pi0v3Corr, piPv3Corr;
+  TVector3 gamma1v3,gamma2v3;
   bool moreChan;
   // pointer to CsI mapper
   trekG4CsImapper* fcsimap;
