@@ -32,7 +32,7 @@ set(ROOT_LIBRARIES ${ROOT_LIBRARIES})
 #---Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
 include(${ROOT_USE_FILE})
 
-ROOT_GENERATE_DICTIONARY(dictDir ${CMAKE_CURRENT_SOURCE_DIR}/src/include/TrekMCtree.h LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/src/include/trekLinkDef.hh)
+ROOT_GENERATE_DICTIONARY(dictDir ${CMAKE_CURRENT_SOURCE_DIR}/src/include/TrekMCtree.h LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/src/include/trekG4LinkDef.hh)
 
 
 #add binary called "e32g4mcAna" built from main.cxx
