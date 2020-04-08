@@ -35,6 +35,7 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
   outFile=new TFile(name.c_str(),"RECREATE");
   h1M2=new TH1D("mass2", "Mass Squared",150,-15000.0,35000);
   h1P=new TH1D("momentum", "Charged Particle Momentum",75,0.0,.3);
+  clust->setChannel(channel);
   switch(channel){
     case 3:
       std::cout<<" --- Alright Channel 3 is ready for business!!! \n";

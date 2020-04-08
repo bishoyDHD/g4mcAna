@@ -23,6 +23,7 @@ public:
   void defHistos(std::string,std::string,std::string,std::string);
   void fillHistos();
   void setPi0label(int lpi0);
+  inline void setChannel(int ch){channel=ch;}
   void setPID(std::string pid1,std::string pid2);
   void setPID(std::string pid1,std::string pid2,std::string pid3);
   void setPID(std::string pid1,std::string pid2,std::string pid3,std::string pid4);
@@ -51,7 +52,7 @@ public:
   inline void setThreshold(double a){threshold=a;}
 private:
   int multiCrys, singleCrys;
-  double threshold;
+  double threshold,channel;
   double mass;
   trekG4findClusters* fclusters;
   std::string tgtn1, tgtn2, tgtn3, tgtcorr;
@@ -88,7 +89,9 @@ private:
   std::vector<double> singleEne,singTheta,singPhi;
   double opAng1, opAng2; // opAng1 is for pi+pi0
   TH1D* h1ang1,*h1ang2,*h1ang3,*h1Etot,*h1inv;
-  TH1D* h1inv2,*h1ggAng;
+  TH1D* h1inv2,*h1ggAng,*h1beta,*h1gamma;
+  TH1D* h1bx,*h1by,*h1bz;
+  TH1D* h1Mcut,*h1Ecut,*h1Gcut,*h1Pcut;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
   TH1D* h1Eloss[4];
   TH1D* h1Multip;

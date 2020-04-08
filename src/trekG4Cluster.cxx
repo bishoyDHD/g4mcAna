@@ -65,7 +65,18 @@ void trekG4Cluster::setPID(std::string pid1,std::string pid2,std::string pid3,st
 // Define histograms to be filled
 void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::string n4){
   gStyle->SetOptStat(0);
-  h1ggAng=new TH1D("h1ggAng","Opening angle in #pi^{0} CM frame",55,-1.1,1.1);
+  if(channel==7){
+    h1Pcut=new TH1D("h1pcut","Opening angle: cos(#theta_{#pi^{+}#pi^{0}})",55,-1.1,1.1);
+    h1Gcut=new TH1D("h1gcut","Opening angle: cos(#theta_{#gamma#gamma})",55,-1.1,1.1);
+    h1Ecut=new TH1D("h1Ecut","Total Cluster Energy",65,0.0,0.30);
+    h1Mcut=new TH1D("h1Mcut","Invariant Mass",65,0.0,0.25);
+    h1ggAng=new TH1D("h1ggAng","Opening angle in #pi^{0} CM frame",55,-1.1,1.1);
+    h1beta=new TH1D("h1beta","Boost velocity #beta",55,-1.1,1.1);
+    h1bx=new TH1D("h1bx","Directional Boost Velocity: #beta_{x}",55,-1.1,1.1);
+    h1by=new TH1D("h1by","Directional Boost Velocity: #beta_{y}",55,-1.1,1.1);
+    h1bz=new TH1D("h1bz","Directional Boost Velocity: #beta_{z}",55,-1.1,1.1);
+    h1gamma=new TH1D("h1gamma","Boost factor #gamma",55,.0,5.1);
+  }
   h1ang1=new TH1D("h1ang1",n1.c_str(),55,-1.1,1.1);
   h1ang2=new TH1D("h1ang2",n2.c_str(),55,-1.1,1.1);
   h1Etot=new TH1D("h1Etot",n3.c_str(),65,0.0,0.30);
@@ -343,12 +354,20 @@ void trekG4Cluster::fillHistos(){
   // LorentzVectors to be boosted
   gamma1lv=par1lv; gamma2lv=par2lv;
   trekG4PiZeroBoost<double> pi0boost(-1*primtgt1px,-1*primtgt1py,-1*primtgt1pz);
-  gamma1lv.Boost(pi0boost.getBx(),pi0boost.getBy(),pi0boost.getBz());
-  gamma2lv.Boost(pi0boost.getBx(),pi0boost.getBy(),pi0boost.getBz());
+  pi0boost.gammaLV(par1lv);
+  pi0boost.Boost();
+  gamma1v3.SetXYZ(pi0boost.Px(),pi0boost.Py(),pi0boost.Pz());
+  //gamma1lv.Boost(pi0boost.Bx(),pi0boost.By(),pi0boost.Bz());
+  //gamma2lv.Boost(pi0boost.Bx(),pi0boost.By(),pi0boost.Bz());
   //gamma1lv.Boost(gamma1v3);
   //gamma2lv.Boost(gamma2v3);
-  gamma1v3.SetXYZ(gamma1lv.Px(),gamma1lv.Py(),gamma1lv.Pz());
-  gamma2v3.SetXYZ(gamma2lv.Px(),gamma2lv.Py(),gamma2lv.Pz());
+  trekG4PiZeroBoost<double> pi0boost2(-1*primtgt1px,-1*primtgt1py,-1*primtgt1pz);
+  pi0boost2.gammaLV(par2lv);
+  pi0boost2.Boost();
+  std::cout<<"********** px1 and px2: "<<pi0boost.Px()<<", "<<pi0boost2.Px()<<std::endl;
+  std::cout<<"********** py1 and py2: "<<pi0boost.Py()<<", "<<pi0boost2.Py()<<std::endl;
+  std::cout<<"********** pz1 and pz2: "<<pi0boost.Pz()<<", "<<pi0boost2.Pz()<<std::endl;
+  gamma2v3.SetXYZ(pi0boost2.Px(),pi0boost2.Py(),pi0boost2.Pz());
   piPv3.SetXYZ(primtgt1px,primtgt1py,primtgt1pz);
   //piPv3.SetXYZ(primx,primy,primz);
   pi0v3.SetXYZ(prim2lv.Px(),prim2lv.Py(),prim2lv.Pz());
@@ -356,13 +375,26 @@ void trekG4Cluster::fillHistos(){
   h1inv->Fill(prim2lv.M());
   h1Etot->Fill(prim2lv.E());
   opAng1=std::cos(piPv3.Angle(pi0v3));
-  h1ggAng->Fill(std::cos(gamma1v3.Angle(gamma2v3)));
   //opAng2=std::cos(par1v3.Angle(par2v3));
   h1ang2->Fill(opAng2);
   h1ang1->Fill(opAng1);
   h1Eloss[0]->Fill(par1E);
   h1Eloss[1]->Fill(par2E);
   h1Multip->Fill(csiMultip);
+  if(channel==7){
+    h1beta->Fill(std::sqrt(pi0boost.B2()));
+    h1bx->Fill(pi0boost.Bx());
+    h1by->Fill(pi0boost.By());
+    h1bz->Fill(pi0boost.Bz());
+    h1gamma->Fill(pi0boost.Gamma());
+    h1ggAng->Fill(std::cos(gamma1v3.Angle(gamma2v3)));
+    if(opAng1<=-.8){
+      h1Gcut->Fill(opAng2);
+      h1Pcut->Fill(opAng1);
+      h1Mcut->Fill(prim2lv.M());
+      h1Ecut->Fill(prim2lv.E());
+    }
+  }
 }
 // --------------->  PLOT HISTOGRAMS <----------------
 void trekG4Cluster::plotHistos(){
