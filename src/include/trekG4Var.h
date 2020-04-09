@@ -14,6 +14,7 @@ public:
   bool parseArgs(int argc, char** argv);
   std::string getFile(){return fileName;};
   std::string getName(){return nameRoot;};
+  inline bool getHelp(){return writeHelp;}
   int getMaxN(){return nmax;};
   int getChannel(){return channel;};
   double getMass(){return mass;};
@@ -23,5 +24,6 @@ private:
   std::string nameRoot;
   int nmax, channel;
   double mass,threshold;
+  bool writeHelp;
 };
 #endif

@@ -13,3 +13,18 @@ This example is rather straightforward to run, simply do the following:
     ~$ cmake ../
     ~$ make -jN
     Here N represents the number of cores. Make sure that cmake has successfully created a build environment.
+
+++++++++++++++++++++++++++++++++++
+   RUNNING THE ANALYSIS ROUTINE
+++++++++++++++++++++++++++++++++++
+The first thing to do is to run the help command once you have successfully compiled the analysis package as follows:
+
+ ~$ ./e36g4mcAna -h # Will print the help menu
+
+Alternatively:
+ ~$ ./e36g4mcAna    # Will also print the help menu
+
+Unless the channel number is specified, the e36g4mcAna will assume the default channel (7).
+Simply perform the analysis of a ROOT file as follows:
+
+ ~$ ./e36g4mcAna -[opt1] -[opt2] /path/to/G4Sim.root

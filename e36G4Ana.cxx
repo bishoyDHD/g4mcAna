@@ -18,6 +18,11 @@ int main(int argc,char** argv){
   pargs->parseArgs(argc,argv);
   std::string fileName=pargs->getFile();
   TFile *file=new TFile(fileName.c_str());
+  bool help=pargs->getHelp();
+  if(help){
+    pargs->printUsage("e36g4mcAna");
+    return 0;
+  }
   string name=pargs->getName();
   int channel=pargs->getChannel();
   double mass=pargs->getMass();

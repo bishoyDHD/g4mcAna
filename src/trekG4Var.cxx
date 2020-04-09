@@ -21,7 +21,7 @@ void trekG4Var::printUsage(std::string name){
 
 bool trekG4Var::parseArgs(int argc, char** argv){
   if(argc==1) return false;
-  bool writeHelp=false;
+  writeHelp=false;
   for(int i=1; i<argc; i++){
     if(argv[i][0]=='-'){
       switch(argv[i][1]){
@@ -57,11 +57,6 @@ bool trekG4Var::parseArgs(int argc, char** argv){
     else{ // default options
       fileName=argv[i];
       //channel=7;
-    }
-  }
-  if(writeHelp){
-    if(nmax>0){
-      std::cout<<" Max number of evens: "<<nmax<<std::endl;
     }
   }
   return true;
