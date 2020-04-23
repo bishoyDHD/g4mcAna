@@ -11,6 +11,7 @@ trekG4Cluster::trekG4Cluster():PID(-1){
   fclusters=new trekG4findClusters();
   fcsimap=new trekG4CsImapper();
   fscore=new clusterScore();
+  for(int i=0; i<3; i++) P_2ndry[i];
   //getClusterScore()=new clusterScore();
   multiCrys=0;  singleCrys=0;
 }
