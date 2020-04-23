@@ -96,9 +96,9 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
     for(int i=0; i<3; i++){
       h1E<<i;
       h2E<<i;
-      h1P[i]=new TH1D(h1E.str().c_str(),tgtn2.c_str(),25,-.01,0.25);
+      h1P[i]=new TH1D(h1E.str().c_str(),tgtn2.c_str(),75,.0,0.25);
     }
-    h2P[0]=new TH2D("h2Momentum",tgtn3.c_str(),25,0.0,.25,25,0.0,0.25);
+    h2P[0]=new TH2D("h2Momentum",tgtn3.c_str(),75,0.0,.35,25,0.0,0.25);
   }
 }
 void trekG4Cluster::setcsiMap(){
