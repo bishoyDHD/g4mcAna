@@ -180,15 +180,16 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       sec1px=tgtInfo->tp_x[1]*GeV;
       sec1py=tgtInfo->tp_y[1]*GeV;
       sec1pz=tgtInfo->tp_z[1]*GeV;
+      sec1E=std::sqrt(sec1px*sec1px+sec1py*sec1py+sec1pz*sec1pz);
       // 2nd secondary particle vertex info.
       sec2px=tgtInfo->tp_x[2]*GeV;
       sec2py=tgtInfo->tp_y[2]*GeV;
       sec2pz=tgtInfo->tp_z[2]*GeV;
+      sec2E=std::sqrt(sec2px*sec2px+sec2py*sec2py+sec2pz*sec2pz);
       if(chNum==7 || chNum==14 || chNum==16){
+        std::cout<<"************* Entering Fill Momentum method\n";
 	clust->fillMomentum(0,p_prim);
-        sec1E=std::sqrt(sec1px*sec1px+sec1py*sec1py+sec1pz*sec1pz);
 	clust->fillMomentum(1,sec1E);
-        sec2E=std::sqrt(sec2px*sec2px+sec2py*sec2py+sec2pz*sec2pz);
 	clust->fillMomentum(2,sec2E);
       }
       Eprim=.10854562540178539;
