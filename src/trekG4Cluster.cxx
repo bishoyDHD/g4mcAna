@@ -93,6 +93,7 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
   h2E<<"h2P_";
   //h1ang3=new TH1D("h1ang3",tgtn1.c_str(),25,-1.05,1.05);
   if(PID>0){
+    std::cout<<"------- Defining histograms for momenta\n";
     for(int i=0; i<3; i++){
       h1E<<i;
       h2E<<i;
@@ -384,7 +385,8 @@ void trekG4Cluster::fillHistos(){
   if(PID>0){
     h2P[0]->Fill(P_2ndry[1]+P_2ndry[2],P_2ndry[0]);
     //for(int a=0; a<3; a++) h1P[a]->Fill(P_2ndry[a]);
-    h1P[0]->Fill(900);
+    std::cout<<"+++++++++Momentum "<<P_2ndry[0]<<std::endl;
+    h1P[0]->Fill(P_2ndry[0]);
   }
   h1Multip->Fill(csiMultip);
   if(channel==7){
