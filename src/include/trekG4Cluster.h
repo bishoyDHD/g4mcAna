@@ -43,7 +43,7 @@ public:
   void setParticle2(double px,double py,double pz,double energy);
   void setParticle3(double px,double py,double pz,double energy);
   void setParticle4(double px,double py,double pz,double energy);
-  inline void fillMomentum(int pid,double momentum){P_2ndry[pid]=momentum;h1P[pid]->Fill(momentum);};
+  inline void fillMomentum(int pid,double momentum){/*P_2ndry[pid]=momentum;*/h1P[pid]->Fill(momentum);};
   void setNumOfSecondaries(int pid){PID=pid;};
   void set2ndryParticle(double px,double py,double pz,double energy,int n);
   void calcMolierRad(double px,double py,double pz,double energy);
