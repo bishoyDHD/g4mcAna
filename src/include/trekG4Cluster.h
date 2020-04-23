@@ -43,6 +43,8 @@ public:
   void setParticle2(double px,double py,double pz,double energy);
   void setParticle3(double px,double py,double pz,double energy);
   void setParticle4(double px,double py,double pz,double energy);
+  inline void fillMomentum(int pid,double momentum){P_2ndry[pid]=momentum;h1P[pid]->Fill(momentum);};
+  void setNumOfSecondaries(int pid){PID=pid;};
   void set2ndryParticle(double px,double py,double pz,double energy,int n);
   void calcMolierRad(double px,double py,double pz,double energy);
   void setScoreMass(double sMass); // set mass for scoring
@@ -51,6 +53,8 @@ public:
   void setClusterVar(int j,double Enecsi);
   inline void setThreshold(double a){threshold=a;}
 private:
+  int PID;
+  double P_2ndry[3];
   int multiCrys, singleCrys;
   double threshold,channel;
   double mass;
@@ -93,9 +97,9 @@ private:
   TH1D* h1bx,*h1by,*h1bz;
   TH1D* h1Mcut,*h1Ecut,*h1Gcut,*h1Pcut;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
-  TH1D* h1Eloss[4];
+  TH1D* h1P[4];
   TH1D* h1Multip;
-  TH2D* h2Eloss[4];
+  TH2D* h2P[4];
   // LorentzVector definitions
   TLorentzVector par1lv,par2lv,par3lv,par4lv,pi0lv,piPlv,prim2lv;
   TLorentzVector par1lvCorr, par2lvCorr, par3lvCorr;

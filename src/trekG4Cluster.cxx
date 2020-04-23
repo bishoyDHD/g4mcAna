@@ -7,7 +7,7 @@
 #include <TLegend.h>
 #include <TStyle.h>
 
-trekG4Cluster::trekG4Cluster(){
+trekG4Cluster::trekG4Cluster():PID(-1){
   fclusters=new trekG4findClusters();
   fcsimap=new trekG4CsImapper();
   fscore=new clusterScore();
@@ -88,14 +88,16 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
   // Target energy-loss correction histograms
   std::ostringstream ecorr;
   std::ostringstream h1E,h2E;
-  h1E<<"h1Eloss_";
-  h2E<<"h2Eloss_";
+  h1E<<"h1P_";
+  h2E<<"h2P_";
   //h1ang3=new TH1D("h1ang3",tgtn1.c_str(),25,-1.05,1.05);
-  for(int i=0; i<2; i++){
-    h1E<<i;
-    h2E<<i;
-    h1Eloss[i]=new TH1D(h1E.str().c_str(),tgtn2.c_str(),25,-.01,0.15);
-    //h2Eloss[i]=new TH2D(h2E.str().c_str(),tgtn3.c_str(),50,0.0,100.,25,0.0,0.05);
+  if(PID>0){
+    for(int i=0; i<3; i++){
+      h1E<<i;
+      h2E<<i;
+      h1P[i]=new TH1D(h1E.str().c_str(),tgtn2.c_str(),25,-.01,0.25);
+    }
+    h2P[0]=new TH2D("h2Momentum",tgtn3.c_str(),25,0.0,.25,25,0.0,0.25);
   }
 }
 void trekG4Cluster::setcsiMap(){
@@ -296,26 +298,26 @@ void trekG4Cluster::primtgtEloss(double px,double py,double pz,double tgtE, doub
 void trekG4Cluster::target1Eloss(double tgtE, double tgtpL){
   // particle 1
   targE1=tgtE/1000.;   targPl1=tgtpL;
-  h1Eloss[0]->Fill(targE1);
-  h2Eloss[0]->Fill(targPl1,targE1);
+  h1P[0]->Fill(targE1);
+  h2P[0]->Fill(targPl1,targE1);
 }
 void trekG4Cluster::target2Eloss(double tgtE, double tgtpL){
   // particle 2
   targE2=tgtE/1000.;   targPl2=tgtpL;
-  h1Eloss[1]->Fill(targE2);
-  h2Eloss[1]->Fill(targPl2,targE2);
+  h1P[1]->Fill(targE2);
+  h2P[1]->Fill(targPl2,targE2);
 }
 void trekG4Cluster::target3Eloss(double tgtE, double tgtpL){
   // particle 3
   targE3=tgtE/1000.;   targPl3=tgtpL;
-  h1Eloss[2]->Fill(targE3);
-  h2Eloss[2]->Fill(targPl3,targE3);
+  h1P[2]->Fill(targE3);
+  h2P[2]->Fill(targPl3,targE3);
 }
 void trekG4Cluster::target4Eloss(double tgtE, double tgtpL){
   // particle 4
   targE4=tgtE/1000.;   targPl4=tgtpL;
-  h1Eloss[3]->Fill(targE4);
-  h2Eloss[3]->Fill(targPl4,targE4);
+  h1P[3]->Fill(targE4);
+  h2P[3]->Fill(targPl4,targE4);
 }
 // --------------->  SET LABEL OF pi0 <----------------
 void trekG4Cluster::setPi0label(int lpi0){
@@ -378,8 +380,9 @@ void trekG4Cluster::fillHistos(){
   //opAng2=std::cos(par1v3.Angle(par2v3));
   h1ang2->Fill(opAng2);
   h1ang1->Fill(opAng1);
-  h1Eloss[0]->Fill(par1E);
-  h1Eloss[1]->Fill(par2E);
+  if(PID>0){
+    h2P[0]->Fill(P_2ndry[1]+P_2ndry[2],P_2ndry[0]);
+  }
   h1Multip->Fill(csiMultip);
   if(channel==7){
     h1beta->Fill(std::sqrt(pi0boost.B2()));

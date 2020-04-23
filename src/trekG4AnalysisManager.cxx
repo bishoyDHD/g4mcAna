@@ -1,7 +1,7 @@
 #include "trekG4AnalysisManager.h"
 #include "trekG4Mass2.h"
 
-trekG4AnalysisManager::trekG4AnalysisManager(){
+trekG4AnalysisManager::trekG4AnalysisManager():chNum(-1){
   std::cout<<" --- Starting trekG4AnalysisManager...\n";
   csiMapper=new trekG4CsImapper();
   clust=new trekG4Cluster();
@@ -36,6 +36,7 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
   h1M2=new TH1D("mass2", "Mass Squared",150,-15000.0,35000);
   h1P=new TH1D("momentum", "Charged Particle Momentum",75,0.0,.3);
   clust->setChannel(channel);
+  chNum=channel;
   switch(channel){
     case 3:
       std::cout<<" --- Alright Channel 3 is ready for business!!! \n";
@@ -47,6 +48,7 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       setClusterPID("e^{+}","e^{-}",dummy,dummy,dummy,dummy);
       clust->setPID("e^{+}","e^{-}");
       clust->primaryPID("#pi^{+}","e^{+}e^{-}",dummy,dummy);
+      clust->setNumOfSecondaries(2);
       break;
     case 7:
       std::cout<<" --- Checking out channel number 7 for kicks!!! \n";
@@ -58,6 +60,7 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       setClusterPID("gamma","gamma",dummy,dummy,dummy,dummy);
       clust->setPID("#gamma1","#gamma2");
       clust->primaryPID("#pi^{+}","#pi^{0}",dummy,dummy);
+      clust->setNumOfSecondaries(2);
       break;
     case 14:
       std::cout<<" --- Alright Channel 14 is ready for business!!! \n";
@@ -69,6 +72,7 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       setClusterPID("e+","e-",dummy,dummy,dummy,dummy);
       clust->setPID("e^{+}","e^{-}");
       clust->primaryPID("#mu^{+}","A'",dummy,dummy);
+      clust->setNumOfSecondaries(2);
       break;
     case 16:
       std::cout<<" --- Alright Channel 16 is ready for business!!! \n";
@@ -79,6 +83,7 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       clust->defHistos(n1,n2,n3,n4);
       clust->setPID("e^{+}","e^{-}");
       clust->primaryPID("#mu^{+}","e^{+}e^{-}",dummy,dummy);
+      clust->setNumOfSecondaries(2);
       break;
   }// end of swith statement
   // set scoring mass here:
@@ -170,16 +175,22 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       primpx=tgtInfo->tp_x[0]*GeV;
       primpy=tgtInfo->tp_y[0]*GeV;
       primpz=tgtInfo->tp_z[0]*GeV;
+      double p_prim=std::sqrt(primpx*primpx+primpy*primpy+primpz*primpz);
       // 1st secondary particle vertex info.
       sec1px=tgtInfo->tp_x[1]*GeV;
       sec1py=tgtInfo->tp_y[1]*GeV;
       sec1pz=tgtInfo->tp_z[1]*GeV;
-      sec1E=std::sqrt(sec1px*sec1px+sec1py*sec1py+sec1pz*sec1pz);
       // 2nd secondary particle vertex info.
       sec2px=tgtInfo->tp_x[2]*GeV;
       sec2py=tgtInfo->tp_y[2]*GeV;
       sec2pz=tgtInfo->tp_z[2]*GeV;
-      sec2E=std::sqrt(sec2px*sec2px+sec2py*sec2py+sec2pz*sec2pz);
+      if(chNum==7 || chNum==14 || chNum==16){
+	clust->fillMomentum(0,p_prim);
+        sec1E=std::sqrt(sec1px*sec1px+sec1py*sec1py+sec1pz*sec1pz);
+	clust->fillMomentum(1,sec1E);
+        sec2E=std::sqrt(sec2px*sec2px+sec2py*sec2py+sec2pz*sec2pz);
+	clust->fillMomentum(2,sec2E);
+      }
       Eprim=.10854562540178539;
       clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
       clust->evalClusters();
