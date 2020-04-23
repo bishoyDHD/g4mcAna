@@ -384,7 +384,7 @@ void trekG4Cluster::fillHistos(){
   if(PID>0){
     h2P[0]->Fill(P_2ndry[1]+P_2ndry[2],P_2ndry[0]);
     //for(int a=0; a<3; a++) h1P[a]->Fill(P_2ndry[a]);
-    h1P[0]->Fill(P_2ndry[0]);
+    h1P[0]->Fill(900);
   }
   h1Multip->Fill(csiMultip);
   if(channel==7){
