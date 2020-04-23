@@ -44,11 +44,11 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       n2="Opening angle between e^{+}e^{-}: cos(#theta_{e^{+}e^{-}})";
       n3="Total energy of e^{+}e^{-}: E_{e^{+}e^{-}}";
       n4="Invariant mass of e^{+}e^{-}";
+      clust->setNumOfSecondaries(2);
       clust->defHistos(n1,n2,n3,n4);
       setClusterPID("e^{+}","e^{-}",dummy,dummy,dummy,dummy);
       clust->setPID("e^{+}","e^{-}");
       clust->primaryPID("#pi^{+}","e^{+}e^{-}",dummy,dummy);
-      clust->setNumOfSecondaries(2);
       break;
     case 7:
       std::cout<<" --- Checking out channel number 7 for kicks!!! \n";
@@ -56,11 +56,11 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       n2="Opening angle between 2#gamma: cos(#theta_{2#gamma})";
       n3="2#gamma total energy: E_{2#gamma}";
       n4="Invariant mass of #pi^{0}";
+      clust->setNumOfSecondaries(2);
       clust->defHistos(n1,n2,n3,n4);
       setClusterPID("gamma","gamma",dummy,dummy,dummy,dummy);
       clust->setPID("#gamma1","#gamma2");
       clust->primaryPID("#pi^{+}","#pi^{0}",dummy,dummy);
-      clust->setNumOfSecondaries(2);
       break;
     case 14:
       std::cout<<" --- Alright Channel 14 is ready for business!!! \n";
@@ -68,11 +68,11 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       n2="Opening angle between e^{+}e^{-}: cos(#theta_{e^{+}e^{-}})";
       n3="Total energy of e^{+}e^{-}: E_{e^{+}e^{-}}";
       n4="Invariant mass of A'";
+      clust->setNumOfSecondaries(2);
       clust->defHistos(n1,n2,n3,n4);
       setClusterPID("e+","e-",dummy,dummy,dummy,dummy);
       clust->setPID("e^{+}","e^{-}");
       clust->primaryPID("#mu^{+}","A'",dummy,dummy);
-      clust->setNumOfSecondaries(2);
       break;
     case 16:
       std::cout<<" --- Alright Channel 16 is ready for business!!! \n";
@@ -80,10 +80,10 @@ void trekG4AnalysisManager::beginRoot(std::string name,int channel){
       n2="Opening angle between e^{+}e^{-}: cos(#theta_{e^{+}e^{-}})";
       n3="Total energy of e^{+}e^{-}: E_{e^{+}e^{-}}";
       n4="Invariant mass of e^{+}e^{-}";
+      clust->setNumOfSecondaries(2);
       clust->defHistos(n1,n2,n3,n4);
       clust->setPID("e^{+}","e^{-}");
       clust->primaryPID("#mu^{+}","e^{+}e^{-}",dummy,dummy);
-      clust->setNumOfSecondaries(2);
       break;
   }// end of swith statement
   // set scoring mass here:
