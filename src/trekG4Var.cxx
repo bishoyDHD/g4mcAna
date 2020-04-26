@@ -1,6 +1,6 @@
 #include <trekG4Var.h>
 
-trekG4Var::trekG4Var():nameRoot("e36g4MC.root"),channel(7),threshold(20.0){
+trekG4Var::trekG4Var():nameRoot("e36g4MC.root"),channel(7),threshold(20.0),nmax(-1){
 }
 trekG4Var::~trekG4Var(){
 
@@ -12,7 +12,7 @@ void trekG4Var::printUsage(std::string name){
   std::cout<<"              to be used for cluster analysis \n";
   std::cout<<" -f:          Name of the simulation file\n";
   std::cout<<" -t:          Set CsI(Tl) threshold\n";
-  std::cout<<" -n #number:  maximum number of events to be processed, currently moot.\n";
+  std::cout<<" -n #number:  maximum number of events to be processed.\n";
   std::cout<<" -m:          mass of particle of interest (used for scoring) \n";
   std::cout<<" -o out.root: string out.root is the name of the output ROOT file. By default, it is e36g4MC.root\n";
   std::cout<<" Example:     ./e36g4mcAna -[opt1] -[opt2] /path/to/G4Sim.root\n";

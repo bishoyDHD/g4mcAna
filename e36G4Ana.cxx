@@ -25,6 +25,7 @@ int main(int argc,char** argv){
   }
   string name=pargs->getName();
   int channel=pargs->getChannel();
+  int nmax=pargs->getEventMax();
   double mass=pargs->getMass();
   double threshold=pargs->getThreshold();
   std::cout<<" ...current channel number is: "<<channel<<std::endl;
@@ -34,7 +35,7 @@ int main(int argc,char** argv){
   trekMC->setInvMass(mass);
   trekMC->setThreshold(threshold);
   trekMC->beginRoot(name, channel);
-  trekMC->analyze(file);
+  trekMC->analyze(file,nmax);
   trekMC->writeRoot();
   // delete respective pointers
   delete trekMC;

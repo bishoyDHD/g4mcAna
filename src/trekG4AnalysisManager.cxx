@@ -1,7 +1,8 @@
 #include "trekG4AnalysisManager.h"
 #include "trekG4Mass2.h"
 
-trekG4AnalysisManager::trekG4AnalysisManager():chNum(-1){
+trekG4AnalysisManager::trekG4AnalysisManager():chNum(-1),
+nentries(-1){
   std::cout<<" --- Starting trekG4AnalysisManager...\n";
   csiMapper=new trekG4CsImapper();
   clust=new trekG4Cluster();
@@ -34,7 +35,8 @@ void trekG4AnalysisManager::setClusterPID(std::string pid1,std::string pid2,std:
 void trekG4AnalysisManager::beginRoot(std::string name,int channel){
   outFile=new TFile(name.c_str(),"RECREATE");
   h1M2=new TH1D("mass2", "Mass Squared",150,-15000.0,35000);
-  h1P=new TH1D("momentum", "Charged Particle Momentum",75,0.0,.3);
+  h1P[0]=new TH1D("targetP", "Charged Particle Momentum in the Target",75,0.0,.25);
+  h1P[1]=new TH1D("mwpcP", "Charged Particle Momentum at C4",75,0.0,.25);
   clust->setChannel(channel);
   chNum=channel;
   switch(channel){
@@ -96,7 +98,7 @@ void trekG4AnalysisManager::writeRoot(){
   outFile->Close();
 }
 
-void trekG4AnalysisManager::analyze(TFile* pfile){
+void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
   TTree* pTree=(TTree*)pfile->Get("K+");
   pTree->SetBranchAddress("MCevtInfo", (TObject **) &evtInfo);
   pTree->SetBranchAddress("MCtgtInfo", (TObject **) &tgtInfo);
@@ -105,7 +107,12 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
   pTree->SetBranchAddress("MCttcInfo", (TObject **) &ttcInfo);
   pTree->SetBranchAddress("MCtof1Info", (TObject **) &tof1Info);
   pTree->SetBranchAddress("MCtof2Info", (TObject **) &tof2Info);
-  nentries=pTree->GetEntries();
+  // if no max number of events specified
+  // default is to run all the events in the ROOT file
+  if(evtMax<0)
+    nentries=pTree->GetEntries();
+  else
+    nentries=evtMax;
   double g1x, g1y, g1z;
   double g2x, g2y, g2z;
   double g3x, g3y, g3z;
@@ -141,6 +148,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
        tof1Info->tof1_E<=k || gc2.countGreater()==0){
       goto endLoop;
     }
+    //std::cout<<"***** Good gap event!\n";
     // detected charged particle vertex info.
     primpx=tgtInfo->tp_x[0]*GeV;
     primpy=tgtInfo->tp_y[0]*GeV;
@@ -148,13 +156,35 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
     p_tgt=std::sqrt(std::pow(primpx,2)+std::pow(primpy,2)+std::pow(primpz,2));
     pc4=std::sqrt(std::pow(mwpcInfo->c4p_x,2)+std::pow(mwpcInfo->c4p_y,2)+
                   std::pow(mwpcInfo->c4p_z,2));
+    // 1st secondary particle vertex info.
+    sec1px=tgtInfo->tp_x[1]*GeV;
+    sec1py=tgtInfo->tp_y[1]*GeV;
+    sec1pz=tgtInfo->tp_z[1]*GeV;
+    sec1E=std::sqrt(sec1px*sec1px+sec1py*sec1py+sec1pz*sec1pz);
+    // 2nd secondary particle vertex info.
+    sec2px=tgtInfo->tp_x[2]*GeV;
+    sec2py=tgtInfo->tp_y[2]*GeV;
+    sec2pz=tgtInfo->tp_z[2]*GeV;
+    sec2E=std::sqrt(sec2px*sec2px+sec2py*sec2py+sec2pz*sec2pz);
+    // Lorentz Vector and invariant mass eval for tgt secondaries
+    clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
+    clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
     // Fill histogram for mass2 & charged particle momentum
     for(UInt_t n=0; n<tof2Info->tof2_P.size(); n++){
       if(tof2Info->tof2_P[n]>=150. && pc4>=150.){
         trekG4Mass2<double> m2(tof1Info->t1,tof2Info->t2[n],tof1Info->tof1_pL,
                                tof2Info->tof2_pL[n],pc4);
         h1M2->Fill(m2.mass2());
-        h1P->Fill(p_tgt);
+        h1P[0]->Fill(p_tgt);
+        h1P[1]->Fill(pc4*GeV);
+        // fill target momenta for good gap events.
+        if(chNum==7 || chNum==14 || chNum==16){
+          //std::cout<<"************* Entering Fill Momentum method\n";
+          clust->fillMomentum(0,p_tgt);
+          clust->fillMomentum(1,sec1E);
+          clust->fillMomentum(2,sec2E);
+          clust->fillMomentum(pc4*GeV);
+        }
       }
     }
     //std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
@@ -163,41 +193,14 @@ void trekG4AnalysisManager::analyze(TFile* pfile){
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
         labelPi0=csiInfo->lablePi01[j];
 	csiID=csiInfo->csiID[j];
+	csiE=csiInfo->addEcsi[j]/1000.;
 	fired1=true;
-	clust->setClusterVar(csiID,csiInfo->addEcsi[j]/1000.);
+	clust->setClusterVar(csiID,csiE);
       }
     } // end of CsI for-loop
     if(fired1){
-      // particle 1
-      // find max element and its corresponding index
-      GeV=1/1000.0;
-      // detected charged particle vertex info.
-      primpx=tgtInfo->tp_x[0]*GeV;
-      primpy=tgtInfo->tp_y[0]*GeV;
-      primpz=tgtInfo->tp_z[0]*GeV;
-      double p_prim=std::sqrt(primpx*primpx+primpy*primpy+primpz*primpz);
-      // 1st secondary particle vertex info.
-      sec1px=tgtInfo->tp_x[1]*GeV;
-      sec1py=tgtInfo->tp_y[1]*GeV;
-      sec1pz=tgtInfo->tp_z[1]*GeV;
-      sec1E=std::sqrt(sec1px*sec1px+sec1py*sec1py+sec1pz*sec1pz);
-      // 2nd secondary particle vertex info.
-      sec2px=tgtInfo->tp_x[2]*GeV;
-      sec2py=tgtInfo->tp_y[2]*GeV;
-      sec2pz=tgtInfo->tp_z[2]*GeV;
-      sec2E=std::sqrt(sec2px*sec2px+sec2py*sec2py+sec2pz*sec2pz);
-      if(chNum==7 || chNum==14 || chNum==16){
-        std::cout<<"************* Entering Fill Momentum method\n";
-	clust->fillMomentum(0,p_prim);
-	clust->fillMomentum(1,sec1E);
-	clust->fillMomentum(2,sec2E);
-      }
       Eprim=.10854562540178539;
-      clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
       clust->evalClusters();
-      // Lorentz Vector and invariant mass eval for tgt secondaries
-      //clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
-      //clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
       //clust->fillHistos();
       clust->empty();
     } // end of fired1 if-loop

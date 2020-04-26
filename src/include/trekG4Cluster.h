@@ -43,7 +43,8 @@ public:
   void setParticle2(double px,double py,double pz,double energy);
   void setParticle3(double px,double py,double pz,double energy);
   void setParticle4(double px,double py,double pz,double energy);
-  inline void fillMomentum(int pid,double momentum){P_2ndry[pid]=momentum;h1P[pid]->Fill(momentum);};
+  inline void fillMomentum(int pid,double momentum){P_tgt[pid]=momentum;h1P[pid]->Fill(momentum);};
+  inline void fillMomentum(double momentum){pC4=momentum;h1Pc4[0]->Fill(momentum);};
   void setNumOfSecondaries(int pid){PID=pid;};
   void set2ndryParticle(double px,double py,double pz,double energy,int n);
   void calcMolierRad(double px,double py,double pz,double energy);
@@ -54,7 +55,7 @@ public:
   inline void setThreshold(double a){threshold=a;}
 private:
   int PID;
-  double P_2ndry[3];
+  double P_tgt[3],pC4;
   int multiCrys, singleCrys;
   double threshold,channel;
   double mass;
@@ -97,13 +98,15 @@ private:
   TH1D* h1bx,*h1by,*h1bz;
   TH1D* h1Mcut,*h1Ecut,*h1Gcut,*h1Pcut;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
-  TH1D* h1P[4];
+  TH1D* h1P[4],*h1Pc4[2],*h1Ptgt;
   TH1D* h1Multip;
   TH2D* h2P[4];
   // LorentzVector definitions
   TLorentzVector par1lv,par2lv,par3lv,par4lv,pi0lv,piPlv,prim2lv;
   TLorentzVector par1lvCorr, par2lvCorr, par3lvCorr;
   TLorentzVector par4lvCorr, pi0lvCorr, piPlvCorr;
+  TLorentzVector tgtprim1lv,tgtprim2lv;
+  TLorentzVector tgtsec1lv,tgtsec2lv,tgtsec3lv;
   TLorentzVector gamma1lv, gamma2lv;
   // TVector3 definitions
   TVector3 par1v3, par2v3, par3v3, par4v3, pi0v3, piPv3;

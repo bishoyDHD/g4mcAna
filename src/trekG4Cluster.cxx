@@ -11,7 +11,6 @@ trekG4Cluster::trekG4Cluster():PID(-1){
   fclusters=new trekG4findClusters();
   fcsimap=new trekG4CsImapper();
   fscore=new clusterScore();
-  for(int i=0; i<3; i++) P_2ndry[i];
   //getClusterScore()=new clusterScore();
   multiCrys=0;  singleCrys=0;
 }
@@ -98,7 +97,10 @@ void trekG4Cluster::defHistos(std::string n1,std::string n2,std::string n3,std::
       h2E<<i;
       h1P[i]=new TH1D(h1E.str().c_str(),tgtn2.c_str(),75,.0,0.25);
     }
-    h2P[0]=new TH2D("h2Momentum",tgtn3.c_str(),75,0.0,.35,25,0.0,0.25);
+    h2P[0]=new TH2D("h2Momentum",tgtn3.c_str(),75,0.0,.3,75,0.0,0.25);
+    h1Ptgt=new TH1D("tgtcsi", "Charged Particle Momentum in the Target",75,0.0,.25);
+    h1Pc4[0]=new TH1D("p_c4", "Charged Particle Momentum at C4",75,0.0,.25);
+    h1Pc4[1]=new TH1D("c4Csi", "Charged Particle Momentum at C4",75,0.0,.25);
   }
 }
 void trekG4Cluster::setcsiMap(){
@@ -130,24 +132,24 @@ void trekG4Cluster::set2ndryParticle(double px,double py, double pz, double E,in
       tgtid1py=py;
       tgtid1pz=pz;
       tgtid1E=E;
-      par1lv.SetPxPyPzE(tgtid1px,tgtid1py,tgtid1pz,tgtid1E);
+      tgtsec1lv.SetPxPyPzE(tgtid1px,tgtid1py,tgtid1pz,tgtid1E);
       break;
     case 2:
       tgtid2px=px;
       tgtid2py=py;
       tgtid2pz=pz;
       tgtid2E=E;
-      par2lv.SetPxPyPzE(tgtid2px,tgtid2py,tgtid2pz,tgtid2E);
-      prim2lv=par1lv+par2lv;
-      h1inv2->Fill(prim2lv.M());
+      tgtsec2lv.SetPxPyPzE(tgtid2px,tgtid2py,tgtid2pz,tgtid2E);
+      tgtprim2lv=tgtsec1lv+tgtsec2lv;
+      h1inv2->Fill(tgtprim2lv.M());
       break;
     case 3:
       tgtid3px=px;
       tgtid3py=py;
       tgtid3pz=pz;
       tgtid3E=E;
-      par3lv.SetPxPyPzE(tgtid3px,tgtid3py,tgtid3pz,tgtid3E);
-      prim2lv=par1lv+par2lv+par3lv;
+      tgtsec3lv.SetPxPyPzE(tgtid3px,tgtid3py,tgtid3pz,tgtid3E);
+      tgtprim2lv=tgtsec1lv+tgtsec2lv+tgtsec3lv;
       break;
     default:
       break;
@@ -382,7 +384,9 @@ void trekG4Cluster::fillHistos(){
   h1ang2->Fill(opAng2);
   h1ang1->Fill(opAng1);
   if(PID>0){
-    h2P[0]->Fill(P_2ndry[1]+P_2ndry[2],P_2ndry[0]);
+    h2P[0]->Fill(P_tgt[1]+P_tgt[2],P_tgt[0]);
+    h1Ptgt->Fill(P_tgt[0]);
+    h1Pc4[1]->Fill(pC4);
   }
   h1Multip->Fill(csiMultip);
   if(channel==7){

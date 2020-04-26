@@ -19,7 +19,7 @@ public:
   trekG4AnalysisManager();
   ~trekG4AnalysisManager();
   // Analysis routine for given rootFile
-  void analyze(TFile* pfile);
+  void analyze(TFile* pfile,int evtMax);
   void beginRoot(std::string name,int channel);
   void writeRoot();
   void init();
@@ -36,7 +36,7 @@ private:
   Int_t nentries,size,csiID;
   int d1, d2, d3, pos1, pos2, pos3;
   int chNum;
-  double GeV;
+  const double GeV=1e-3, MeV=1.0;
   double mass; // mass for the particle of interest (scoring)
   double threshold;
   double g1px, g1py, g1pz, Eg1;
@@ -60,6 +60,6 @@ private:
   TrekMwpcInfo* mwpcInfo;
   TrekTtcInfo* ttcInfo;
   TrekTof2Info* tof2Info;
-  TH1D* h1M2,*h1P;
+  TH1D* h1M2,*h1P[2];
 };
 #endif
