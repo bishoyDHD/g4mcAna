@@ -169,6 +169,9 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
     // Lorentz Vector and invariant mass eval for tgt secondaries
     clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
     clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
+    // obtain energy of secondary particle once they exit the target
+    targetEloss[1]=(sec1E-tgtInfo->targetE[1]*GeV);
+    targetEloss[2]=(sec2E-tgtInfo->targetE[2]*GeV);
     // Fill histogram for mass2 & charged particle momentum
     for(UInt_t n=0; n<tof2Info->tof2_P.size(); n++){
       if(tof2Info->tof2_P[n]>=150. && pc4>=150.){
@@ -184,6 +187,12 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
           clust->fillMomentum(1,sec1E);
           clust->fillMomentum(2,sec2E);
           clust->fillMomentum(pc4*GeV);
+        }
+        // correct for target energy-loss event-by-event.
+        if(chNum==7 || chNum==14 || chNum==16){
+          //std::cout<<"************* Entering Fill Momentum method\n";
+          clust->setTargetEloss(1,targetEloss[1]);
+          clust->setTargetEloss(2,targetEloss[2]);
         }
       }
     }

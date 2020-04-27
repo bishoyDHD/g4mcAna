@@ -43,6 +43,7 @@ public:
   void setParticle2(double px,double py,double pz,double energy);
   void setParticle3(double px,double py,double pz,double energy);
   void setParticle4(double px,double py,double pz,double energy);
+  inline void setTargetEloss(int id,double eloss){E_loss[id]=eloss;h1ElossTarg[id]->Fill(eloss);}
   inline void fillMomentum(int pid,double momentum){P_tgt[pid]=momentum;h1P[pid]->Fill(momentum);};
   inline void fillMomentum(double momentum){pC4=momentum;h1Pc4[0]->Fill(momentum);};
   void setNumOfSecondaries(int pid){PID=pid;};
@@ -55,7 +56,7 @@ public:
   inline void setThreshold(double a){threshold=a;}
 private:
   int PID;
-  double P_tgt[3],pC4;
+  double P_tgt[4],pC4,E_loss[4];
   int multiCrys, singleCrys;
   double threshold,channel;
   double mass;
@@ -99,6 +100,7 @@ private:
   TH1D* h1Mcut,*h1Ecut,*h1Gcut,*h1Pcut;
   TH1D* h1angCorr[4],*h1Ecorr,*h1invCorr;
   TH1D* h1P[4],*h1Pc4[2],*h1Ptgt;
+  TH1D* h1ElossTarg[4];
   TH1D* h1Multip;
   TH2D* h2P[4];
   // LorentzVector definitions

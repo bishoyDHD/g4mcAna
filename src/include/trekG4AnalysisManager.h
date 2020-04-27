@@ -42,6 +42,7 @@ private:
   double g1px, g1py, g1pz, Eg1;
   double g2px, g2py, g2pz, Eg2;
   double g3px, g3py, g3pz, Eg3;
+  double targetEloss[7];
   double primpx, primpy, primpz, Eprim,primlen;
   double sec1px,sec1py,sec1pz,sec1E;
   double sec2px,sec2py,sec2pz,sec2E;
