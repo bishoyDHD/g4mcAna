@@ -192,7 +192,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
     for(UInt_t j=0; j<csiInfo->csiID.size(); j++){
         for(int i=0; i<7;i++){
           TString particleID=tgtInfo->particleDef[i];
-	std::cout<<"------ trackID: "<<evtInfo->trid[i]<<std::endl;
+	std::cout<<"------ trackID: "<<evtInfo->trid[i]<<" - "<<tgtInfo->sE[i]<<" : "<<i<<std::endl;
 	if(particleID=="e+" || particleID=="e-") std::abort;
 	}
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
