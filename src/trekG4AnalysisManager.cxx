@@ -170,6 +170,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
     clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
     clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
     // obtain energy of secondary particle once they exit the target
+    targetEloss[0]=(tgtInfo->targetE[0]*GeV);
     targetEloss[1]=(tgtInfo->targetE[1]*GeV);
     targetEloss[2]=(tgtInfo->targetE[2]*GeV);
     // Fill histogram for mass2 & charged particle momentum
@@ -191,6 +192,7 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
         // correct for target energy-loss event-by-event.
         if(chNum==14 || chNum==16){
           //std::cout<<"************* Entering Fill Momentum method\n";
+          clust->setTargetEloss(0,targetEloss[0]);
           clust->setTargetEloss(1,targetEloss[1]);
           clust->setTargetEloss(2,targetEloss[2]);
         }

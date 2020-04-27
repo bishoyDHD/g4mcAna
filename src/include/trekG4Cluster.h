@@ -56,7 +56,7 @@ public:
   inline void setThreshold(double a){threshold=a;}
 private:
   int PID;
-  double P_tgt[4],pC4,E_loss[4];
+  double P_tgt[4],pC4,E_loss[7];
   int multiCrys, singleCrys;
   double threshold,channel;
   double mass;
