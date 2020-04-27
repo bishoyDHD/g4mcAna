@@ -169,10 +169,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
     // Lorentz Vector and invariant mass eval for tgt secondaries
     clust->set2ndryParticle(sec1px,sec1py,sec1pz,sec1E,1);
     clust->set2ndryParticle(sec2px,sec2py,sec2pz,sec2E,2);
-    // obtain energy of secondary particle once they exit the target
-    targetEloss[0]=(tgtInfo->targetE[0]*GeV);
-    targetEloss[1]=(tgtInfo->targetE[1]*GeV);
-    targetEloss[2]=(tgtInfo->targetE[2]*GeV);
     // Fill histogram for mass2 & charged particle momentum
     for(UInt_t n=0; n<tof2Info->tof2_P.size(); n++){
       if(tof2Info->tof2_P[n]>=150. && pc4>=150.){
@@ -189,13 +185,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
           clust->fillMomentum(2,sec2E);
           clust->fillMomentum(pc4*GeV);
         }
-        // correct for target energy-loss event-by-event.
-        if(chNum==14 || chNum==16){
-          //std::cout<<"************* Entering Fill Momentum method\n";
-          clust->setTargetEloss(0,targetEloss[0]);
-          clust->setTargetEloss(1,targetEloss[1]);
-          clust->setTargetEloss(2,targetEloss[2]);
-        }
       }
     }
     //std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
@@ -204,7 +193,16 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
         labelPi0=csiInfo->lablePi01[j];
 	csiID=csiInfo->csiID[j];
+	trackID=csiInfo->trackID[j]-1;
 	csiE=csiInfo->addEcsi[j]/1000.;
+        targetEloss=csiInfo->ECsI[j]*GeV;
+        // correct for target energy-loss event-by-event.
+        if(chNum==14 || chNum==16){
+          // obtain energy of secondary particle once they exit the target
+          if(trackID==1 || trackID==2){
+            clust->setTargetEloss(trackID,targetEloss);
+          }
+        }
 	fired1=true;
 	clust->setClusterVar(csiID,csiE);
       }
