@@ -206,8 +206,8 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
           }
         }
 	fired1=true;
-	//clust->setClusterVar(csiID,csiE);
-	clust->setClusterVar(csiID,gRandom->Gaus(csiE,std::pow(csiE,-0.5)));
+	clust->setClusterVar(csiID,csiE);
+	//clust->setClusterVar(csiID,gRandom->Gaus(csiE,.05*std::pow(csiE,-0.5)));
       }
     } // end of CsI for-loop
     if(fired1){
