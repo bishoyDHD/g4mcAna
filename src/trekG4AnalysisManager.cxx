@@ -190,14 +190,10 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
     //std::cout<<"---- checking the size here: "<<size<<" : "<<gtof2.countGreater()<<"\n";
     // entering CsI analysis segment
     for(UInt_t j=0; j<csiInfo->csiID.size(); j++){
-        for(int i=0; i<7;i++){
-          TString particleID=tgtInfo->particleDef[i];
-	std::cout<<"------ trackID: "<<evtInfo->trid[i]<<" - "<<tgtInfo->sE[i]<<" : "<<i<<std::endl;
-	if(particleID=="e+" || particleID=="e-") std::abort;
-	}
       if(csiInfo->csiID[j]>=0 && csiInfo->addEcsi[j]>=threshold){
         labelPi0=csiInfo->lablePi01[j];
 	csiID=csiInfo->csiID[j];
+	trackID=csiInfo->trackID[j]-1;
 	csiE=csiInfo->addEcsi[j]/1000.;
         targetEloss=csiInfo->ECsI[j]*GeV;
         // correct for target energy-loss event-by-event.
@@ -205,7 +201,6 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
           // obtain energy of secondary particle once they exit the target
           if(trackID==1 || trackID==2){
             clust->setTargetEloss(trackID,targetEloss);
-	    std::cout<<"...We have the right trackID here!";
           }
         }
 	fired1=true;
