@@ -154,6 +154,8 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
     primpy=tgtInfo->tp_y[0]*GeV;
     primpz=tgtInfo->tp_z[0]*GeV;
     p_tgt=std::sqrt(std::pow(primpx,2)+std::pow(primpy,2)+std::pow(primpz,2));
+    Eprim=.10854562540178539;
+    clust->primtgtEloss(primpx, primpy, primpz, Eprim, primlen);
     pc4=std::sqrt(std::pow(mwpcInfo->c4p_x,2)+std::pow(mwpcInfo->c4p_y,2)+
                   std::pow(mwpcInfo->c4p_z,2));
     // 1st secondary particle vertex info.
@@ -204,7 +206,8 @@ void trekG4AnalysisManager::analyze(TFile* pfile,int evtMax=-1){
           }
         }
 	fired1=true;
-	clust->setClusterVar(csiID,csiE);
+	//clust->setClusterVar(csiID,csiE);
+	clust->setClusterVar(csiID,gRandom->Gaus(csiE,std::pow(csiE,-0.5)));
       }
     } // end of CsI for-loop
     if(fired1){
