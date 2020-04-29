@@ -344,9 +344,9 @@ void trekG4Cluster::fillHistos(){
   //std::cout<<" --- checking the pi0 channel: "<<labelPi0<<std::endl;
   //pi0lv=par1lv+par2lv;
   // ------ Energy loss correction application -------///
-  //par1lvCorr.SetPxPyPzE(par1px,par1py,par1pz,par1E+targE1);
-  //par2lvCorr.SetPxPyPzE(par2px,par2py,par2pz,par2E+targE2);
-  //pi0lvCorr=par1lvCorr+par2lvCorr;
+  par1lvCorr.SetPxPyPzE(par1px,par1py,par1pz,par1E+gRandom->Gaus(8.89e-3,2.97e-3));
+  par2lvCorr.SetPxPyPzE(par2px,par2py,par2pz,par2E+gRandom->Gaus(8.89e-3,2.97e-3));
+  prim2lvCorr=par1lvCorr+par2lvCorr;
   //h1invCorr->Fill(pi0lvCorr.M());
   //h1Ecorr->Fill(pi0lvCorr.E());
   //pi0lv=par1lv+par3lv+par4lv;
@@ -388,6 +388,8 @@ void trekG4Cluster::fillHistos(){
     h2P[0]->Fill(P_tgt[1]+P_tgt[2],P_tgt[0]);
     h1Ptgt->Fill(P_tgt[0]);
     h1Pc4[1]->Fill(pC4);
+    h1invCorr->Fill(prim2lvCorr.M());
+    h1Ecorr->Fill(prim2lvCorr.E());
   }
   h1Multip->Fill(csiMultip);
   if(channel==7){
@@ -468,7 +470,7 @@ void trekG4Cluster::plotHistos(){
   h2Eloss[1]->GetXaxis()->SetTitle("path length [mm]");
   h2Eloss[1]->GetYaxis()->SetTitle(Eclustpid2.str().c_str());
   h2Eloss[1]->Draw("colz0");
-  c4->Write();
+  c4->Write();*/
   // ------ Energy-loss correction plots ---------- //
   c5->Divide(2,1);
   c5->cd(1);
@@ -479,7 +481,7 @@ void trekG4Cluster::plotHistos(){
   h1invCorr->GetXaxis()->SetTitle(M.str().c_str());
   h1invCorr->GetYaxis()->SetTitle("counts/bin");
   h1invCorr->Draw("hist");
-  c5->Write();*/
+  c5->Write();
 }
 void trekG4Cluster::plotHistos(TH1D* h1P){
   TCanvas* c1=new TCanvas("c1","Inv. Mass and total E",800,900);

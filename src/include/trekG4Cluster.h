@@ -6,6 +6,7 @@
 #include <TH2D.h>
 #include <TList.h>
 #include <TLorentzVector.h>
+#include <TRandom3.h>
 #include <TDirectory.h>
 #include "trekG4findClusters.h"
 #include "trekG4CsImapper.h"
@@ -105,7 +106,7 @@ private:
   TH2D* h2P[4];
   // LorentzVector definitions
   TLorentzVector par1lv,par2lv,par3lv,par4lv,pi0lv,piPlv,prim2lv;
-  TLorentzVector par1lvCorr, par2lvCorr, par3lvCorr;
+  TLorentzVector par1lvCorr, par2lvCorr, par3lvCorr,prim2lvCorr;
   TLorentzVector par4lvCorr, pi0lvCorr, piPlvCorr;
   TLorentzVector tgtprim1lv,tgtprim2lv;
   TLorentzVector tgtsec1lv,tgtsec2lv,tgtsec3lv;
