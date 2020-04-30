@@ -344,8 +344,10 @@ void trekG4Cluster::fillHistos(){
   //std::cout<<" --- checking the pi0 channel: "<<labelPi0<<std::endl;
   //pi0lv=par1lv+par2lv;
   // ------ Energy loss correction application -------///
-  par1lvCorr.SetPxPyPzE(par1px,par1py,par1pz,par1E+gRandom->Gaus(8.89e-3,2.97e-3));
-  par2lvCorr.SetPxPyPzE(par2px,par2py,par2pz,par2E+gRandom->Gaus(8.89e-3,2.97e-3));
+  //par1lvCorr.SetPxPyPzE(par1px,par1py,par1pz,par1E+gRandom->Gaus(8.89e-3,2.97e-3));
+  //par2lvCorr.SetPxPyPzE(par2px,par2py,par2pz,par2E+gRandom->Gaus(8.89e-3,2.97e-3));
+  par1lvCorr.SetPxPyPzE(par1px,par1py,par1pz,par1E+11.89e-3);
+  par2lvCorr.SetPxPyPzE(par2px,par2py,par2pz,par2E+11.89e-3);
   prim2lvCorr=par1lvCorr+par2lvCorr;
   //h1invCorr->Fill(pi0lvCorr.M());
   //h1Ecorr->Fill(pi0lvCorr.E());
